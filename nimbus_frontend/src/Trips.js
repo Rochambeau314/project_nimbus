@@ -12,33 +12,33 @@ function Trips(){
     const {id_token} = useParams();
     console.log(id_token);
 
-    
+    let trips = useData()
 
-    //variable for trip data 
-    const [trips, setTrips] = useState([])
-    const [student, setStudent] = useState([])    
+    // //variable for trip data 
+    // const [trips, setTrips] = useState([])
+    // const [student, setStudent] = useState([])    
 
-    // pull all current trips from backend 
-    const tripURL = `${'http://127.0.0.1:8000'}/create_trip`;
+    // // pull all current trips from backend 
+    // const tripURL = `${'http://127.0.0.1:8000'}/create_trip`;
 
-    // pull current student data
-    const studentURL = `${'http://127.0.0.1:8000'}/student_data`;
+    // // pull current student data
+    // const studentURL = `${'http://127.0.0.1:8000'}/student_data`;
 
-    React.useEffect(() => {
-        axios.get(studentURL, { headers: {"Authorization": `Token ${id_token}`} })
-            .then((response) => {
-            const student_data = response.data;
-            console.log('student_data', student_data)
-            setStudent(student_data)
-        });
+    // React.useEffect(() => {
+    //     axios.get(studentURL, { headers: {"Authorization": `Token ${id_token}`} })
+    //         .then((response) => {
+    //         const student_data = response.data;
+    //         console.log('student_data', student_data)
+    //         setStudent(student_data)
+    //     });
 
-        axios.get(tripURL, { headers: {"Authorization": `Token ${id_token}`} })
-            .then((response) => {
-            const trip_data = response.data;
-            setTrips(trip_data)
-            //console.log('trip_data', trip_data)
-        });
-      }, []);
+    //     axios.get(tripURL, { headers: {"Authorization": `Token ${id_token}`} })
+    //         .then((response) => {
+    //         const trip_data = response.data;
+    //         setTrips(trip_data)
+    //         //console.log('trip_data', trip_data)
+    //     });
+    //   }, []);
     
 
     const columns = [
@@ -71,7 +71,6 @@ function Trips(){
         },
 
     ];
-    console.log(trips)
     
 return(
     <div> 
