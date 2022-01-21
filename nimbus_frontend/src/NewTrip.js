@@ -10,6 +10,7 @@ import DateAdapter from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import dayjs from "dayjs";
+import {useData} from './DataContext';
 
 function NewTrip() {
 

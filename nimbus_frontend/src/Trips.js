@@ -5,11 +5,14 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import logo from './nimbus_recolored.png'; 
 import { DataGrid } from '@mui/x-data-grid';
+import {useData} from './DataContext';
 
 function Trips(){
     // pull the access token from the URL 
     const {id_token} = useParams();
     console.log(id_token);
+
+    
 
     //variable for trip data 
     const [trips, setTrips] = useState([])
