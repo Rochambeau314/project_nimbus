@@ -8,14 +8,10 @@ import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';
 
 function Trips(){
-    // pull the access token from the URL 
-    const {id_token} = useParams();
-    //console.log(id_token);
-
+    
     let other_trips = useData()['other_trips']
-    //console.log('other_trips', other_trips) 
-
-    const columns = [
+    console.log('data in the trips component', other_trips)
+    const columns = [ 
         {
             field: 'student',
             headerName: 'name',

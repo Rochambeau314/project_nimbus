@@ -20,13 +20,13 @@ export function DataProvider({children}) {
         'user': {},
         'student': {},
         'other_trips': {},
-        'user_trips': {},
+        'user_trips': {},    
     })
 
     //const id_token = useParams();  
-    //console.log("token", id_token)
+    //console.log("token", id_token) 
 
-    const {token} = useToken()  
+    const {token} = useToken()   
     console.log('id_token in datacontext', token)
     
     // pull all current trips from backend 
@@ -148,13 +148,12 @@ export function DataProvider({children}) {
           
         setData({
             'user': user,
-            'student': student,
+            'student': student, 
             'other_trips': all_trips,
-            'user_trips': user_trip,
-        })
-    }, [token]);    
-
-    console.log('final_data', data) 
+            'user_trips': user_trip,})
+    }, [token]); 
+    
+    console.log('final_data', data)  
 
     return (
         <DataContext.Provider value = {data}>

@@ -18,7 +18,7 @@ function Home(){
 
     React.useEffect(() => {
         setToken(id_token); 
-      }, []);  
+      }, []); 
 
     return(
         <div>
