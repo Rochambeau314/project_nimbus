@@ -23,33 +23,34 @@ export function DataProvider({children}) {
         'user_trips': {},
     })
 
-    
-    //const id_token = useParams();
+    //const id_token = useParams();  
     //console.log("token", id_token)
-    const {token} = useToken()
+
+    const {token} = useToken()  
     console.log('id_token in datacontext', token)
     
     // pull all current trips from backend 
+    const [user_trip, setUserTrip] = useState({})
     const tripURL = `${'http://127.0.0.1:8000'}/my_trips`;
         
     //
+    const [all_trips, setAllTrips] = useState({})
     const newtripURL = `${'http://127.0.0.1:8000'}/create_trip`;
  
     // pull current student data
+    const [student, setStudent] = useState({})
     const studentURL = `${'http://127.0.0.1:8000'}/student_data`;
  
     // pull user data from backend 
+    const [user, setUser] = useState({})
     const userURL = `${'http://127.0.0.1:8000'}/user_data`;
     
     React.useEffect(() => {
-        let data_store = data
-        console.log("data_store before", data_store)
-        
         axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
             .then((response) => {
             const user_data = response.data;
-            console.log('user_data', user_data)
-            //data_store['user'] = user_data
+            console.log('user_data', user_data) 
+            setUser(user_data)
             })
             .catch(function (error) {
                 if (error.response) {
@@ -74,7 +75,7 @@ export function DataProvider({children}) {
             .then((response) => {
             const student_data = response.data;
             console.log('student_data', student_data)
-            //data_store['student'] = student_data
+            setStudent(student_data)
             })
             .catch(function (error) {
                 if (error.response) {
@@ -99,7 +100,7 @@ export function DataProvider({children}) {
             .then((response) => {
             const trip_data = response.data;
             console.log('my trips', trip_data)
-            //data_store['other_trips'] = trip_data
+            setUserTrip(trip_data)
             })
             .catch(function (error) {
                 if (error.response) {
@@ -124,7 +125,7 @@ export function DataProvider({children}) {
             .then((response) => {
             const trip_data = response.data;
             console.log('trip_data', trip_data)
-            //data_store['user_trips'] = trip_data
+            setAllTrips(trip_data)
         })
         .catch(function (error) {
             if (error.response) {
@@ -132,7 +133,7 @@ export function DataProvider({children}) {
               // that falls out of the range of 2xx
               console.log(error.response.data);
               console.log(error.response.status);
-              console.log(error.response.headers);
+              console.log(error.response.headers); 
             } else if (error.request) {
               // The request was made but no response was received
               // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
@@ -145,9 +146,15 @@ export function DataProvider({children}) {
             console.log(error.config);
           });
           
-        console.log("data_store after", data_store)
-        setData(data_store)
-    }, []);
+        setData({
+            'user': user,
+            'student': student,
+            'other_trips': all_trips,
+            'user_trips': user_trip,
+        })
+    }, [token]);    
+
+    console.log('final_data', data) 
 
     return (
         <DataContext.Provider value = {data}>

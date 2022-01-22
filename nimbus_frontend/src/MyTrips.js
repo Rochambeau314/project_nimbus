@@ -10,7 +10,7 @@ import {useData} from './DataContext';
 function Trips(){
     // pull the access token from the URL 
     const {id_token} = useParams();
-    console.log(id_token);
+    //console.log(id_token);
 
     //variable for trip data 
     const [trips, setTrips] = useState([])
@@ -26,10 +26,10 @@ function Trips(){
             .then((response) => {
             const trip_data = response.data;
             setTrips(trip_data)
-            console.log('my trips', trip_data)
+            //console.log('my trips', trip_data)
         });
       }, []);
-    
+     
 
     const columns = [
         {
@@ -61,7 +61,7 @@ function Trips(){
         },
 
     ];
-    console.log(trips)
+    //console.log(trips)
 
     // redirect to New Trip page onSubmit of the New Trip button 
     let navigate = useNavigate();

@@ -15,9 +15,10 @@ function Home(){
     console.log('id_token', id_token);
 
     const {token, setToken} = useToken();
+
     React.useEffect(() => {
-        setToken(id_token);
-      }, []);
+        setToken(id_token); 
+      }, []);  
 
     return(
         <div>
