@@ -8,15 +8,16 @@ import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';  
 import {useToken} from './AuthContext';
 
-function Trips(){ 
-    const {token} = useToken()
+function Trips(){    
+    const {token} = useToken() 
     const context_data = useData(); 
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]) 
     React.useEffect(() => {
-        setData(context_data); 
-      }, [data]); 
+        console.log('trips useEffect has updated the data')
+        setData(context_data);  
+    }); 
       
-    console.log('data in trips', data)
+    console.log('data in trips', data)  
     const other_trips = data['other_trips']
     console.log('other_trips', data['other_trips']) 
 
