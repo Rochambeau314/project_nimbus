@@ -8,30 +8,21 @@ import { DataGrid } from '@mui/x-data-grid';
 import {useToken} from './AuthContext';
 
 // current user data
-const DataContext = React.createContext()
-
-export function useData(){
-    return useContext(DataContext)
+const DataContext = React.createContext()  
+  
+export function useData(){  
+    return useContext(DataContext) 
 }
 
 export function DataProvider({children}) {  
 
-    const [data, setData] = useState({
-        'user': {},
-        'student': {},
-        'other_trips': {},
-        'user_trips': {},    
-    })
 
-    //const id_token = useParams();  
-    //console.log("token", id_token) 
-
-    const {token} = useToken()   
+    const {token} = useToken()       
     console.log('id_token in datacontext', token)
     
     // pull all current trips from backend 
     const [user_trip, setUserTrip] = useState({})
-    const tripURL = `${'http://127.0.0.1:8000'}/my_trips`;
+    const tripURL = `${'http://127.0.0.1:8000'}/my_trips`; 
         
     //
     const [all_trips, setAllTrips] = useState({})
@@ -44,116 +35,75 @@ export function DataProvider({children}) {
     // pull user data from backend 
     const [user, setUser] = useState({})
     const userURL = `${'http://127.0.0.1:8000'}/user_data`;
-    
+
+    const [data, setData] = useState({
+        'user': user,
+        'student': student,    
+        'other_trips': all_trips,
+        'user_trips': user_trip,     
+    })
+
+    //console.log('data before useEffect', data)
     React.useEffect(() => {
+        const new_data = { 
+            'user': [],
+            'student': [], 
+            'other_trips': [],
+            'user_trips': [],}
+
+        console.log('useEffect start')
+
         axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
             .then((response) => {
             const user_data = response.data;
-            console.log('user_data', user_data) 
-            setUser(user_data)
+            //console.log('user_data', user_data) 
+            setUser(prevUser => user_data) 
+            new_data['user'] = user_data
             })
             .catch(function (error) {
-                if (error.response) {
-                  // The request was made and the server responded with a status code
-                  // that falls out of the range of 2xx
-                  console.log(error.response.data);
-                  console.log(error.response.status);
-                  console.log(error.response.headers);
-                } else if (error.request) {
-                  // The request was made but no response was received
-                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                  // http.ClientRequest in node.js
-                  console.log(error.request);
-                } else {
-                  // Something happened in setting up the request that triggered an Error
-                  console.log('Error', error.message);
-                }
-                console.log(error.config);
-              });
-    
+              }); 
+        console.log('new_data user', new_data['user'])
+
         axios.get(studentURL, { headers: {"Authorization": `Token ${token}`} })
             .then((response) => {
             const student_data = response.data;
-            console.log('student_data', student_data)
+            //console.log('student_data', student_data)
             setStudent(student_data)
+            new_data['student'] = student_data
+            setUserTrip(prevStudent => student_data)
             })
             .catch(function (error) {
-                if (error.response) {
-                // The request was made and the server responded with a status code
-                // that falls out of the range of 2xx
-                console.log(error.response.data);
-                console.log(error.response.status);
-                console.log(error.response.headers);
-                } else if (error.request) {
-                // The request was made but no response was received
-                // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                // http.ClientRequest in node.js
-                console.log(error.request);
-                } else {
-                // Something happened in setting up the request that triggered an Error
-                console.log('Error', error.message);
-                }
-                console.log(error.config);
             });
+        console.log('new_data student', new_data['student'])
 
         axios.get(tripURL, { headers: {"Authorization": `Token ${token}`} })
             .then((response) => {
             const trip_data = response.data;
-            console.log('my trips', trip_data)
-            setUserTrip(trip_data)
-            })
+            //console.log('my trips', trip_data)
+            setUserTrip(prevUser_trip => trip_data)
+            new_data['user_trips'] = trip_data
+            })  
             .catch(function (error) {
-                if (error.response) {
-                  // The request was made and the server responded with a status code
-                  // that falls out of the range of 2xx
-                  console.log(error.response.data);
-                  console.log(error.response.status);
-                  console.log(error.response.headers);
-                } else if (error.request) {
-                  // The request was made but no response was received
-                  // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-                  // http.ClientRequest in node.js
-                  console.log(error.request);
-                } else {
-                  // Something happened in setting up the request that triggered an Error
-                  console.log('Error', error.message);
-                }
-                console.log(error.config);
-              });
+              });  
+        console.log('new_data user_trips', new_data['user_trips'])
 
         axios.get(newtripURL, { headers: {"Authorization": `Token ${token}`} })
             .then((response) => {
             const trip_data = response.data;
-            console.log('trip_data', trip_data)
-            setAllTrips(trip_data)
+            //console.log('trip_data', trip_data)
+            setAllTrips(prevAll_trips => trip_data)
+            new_data['other_trips'] = trip_data
         })
         .catch(function (error) {
-            if (error.response) {
-              // The request was made and the server responded with a status code
-              // that falls out of the range of 2xx
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers); 
-            } else if (error.request) {
-              // The request was made but no response was received
-              // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-              // http.ClientRequest in node.js
-              console.log(error.request);
-            } else {
-              // Something happened in setting up the request that triggered an Error
-              console.log('Error', error.message);
-            }
-            console.log(error.config);
-          });
-          
-        setData({
-            'user': user,
-            'student': student, 
-            'other_trips': all_trips,
-            'user_trips': user_trip,})
+          }); 
+        
+        console.log('other_trips user_trips', new_data['other_trips'])
+
+        console.log("new data", new_data)    
+        setData(new_data)
+        console.log("useEffect stop")
+
     }, [token]); 
-    
-    console.log('final_data', data)  
 
     return (
         <DataContext.Provider value = {data}>

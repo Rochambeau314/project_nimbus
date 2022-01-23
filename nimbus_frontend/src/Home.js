@@ -14,12 +14,14 @@ function Home(){
     const {id_token} = useParams();
     console.log('id_token', id_token);
 
-    const {token, setToken} = useToken();
+    const {token, setToken} = useToken();  
 
     React.useEffect(() => {
         setToken(id_token); 
-      }, []); 
+      }, [token]); 
 
+    console.log('data in home', useData())
+    
     return(
         <div>
             <div> token: {token}</div>

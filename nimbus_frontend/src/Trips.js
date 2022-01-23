@@ -5,12 +5,23 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import logo from './nimbus_recolored.png'; 
 import { DataGrid } from '@mui/x-data-grid';
-import {useData} from './DataContext';
+import {useData} from './DataContext';  
+import {useToken} from './AuthContext';
 
-function Trips(){
-    
-    let other_trips = useData()['other_trips']
-    console.log('data in the trips component', other_trips)
+function Trips(){ 
+    const {token} = useToken()
+    const context_data = useData(); 
+    const [data, setData] = useState([])
+    React.useEffect(() => {
+        setData(context_data); 
+      }, [data]); 
+      
+    console.log('data in trips', data)
+    const other_trips = data['other_trips']
+    console.log('other_trips', data['other_trips']) 
+
+    const user_trip = data['user_trips']  
+
     const columns = [ 
         {
             field: 'student',
@@ -41,7 +52,13 @@ function Trips(){
         },
 
     ];
-    
+
+    // redirects to specific washer when a washer is clicked 
+    let navigate = useNavigate();
+    async function handleTripClick(data){ 
+        console.log('clicked!', data['student'])
+        navigate(`../RideShare/${data['student']}/${token}`, {state: data});
+    } 
 return(
     <div> 
         <h1>trips </h1> 
@@ -51,8 +68,8 @@ return(
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
-            checkboxSelection
             disableSelectionOnClick={true}
+            onRowClick={(data) => handleTripClick(data['row'])}
         />
         </div>
     </div>
