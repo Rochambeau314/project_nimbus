@@ -57,14 +57,14 @@ function Trips(){
     // redirects to specific washer when a washer is clicked 
     let navigate = useNavigate();
     async function handleTripClick(data){ 
-        console.log('clicked!', data['student'])
+        console.log('clicked!', data)
         navigate(`../RideShare/${data['student']}/${token}`, {state: data});
     } 
 return(
     <div> 
         <h1>trips </h1> 
         <div style={{ height: 400, width: '100%' }}>
-        <DataGrid getRowId={row => row.trip_id}
+        <DataGrid getRowId={row => row.student}
             rows={other_trips} 
             columns={columns}
             pageSize={5}

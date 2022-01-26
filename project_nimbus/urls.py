@@ -34,4 +34,5 @@ urlpatterns = [
     path('student_data', views.student_data, name = 'student_data'),
     path('create_trip', views.create_trip, name = 'create_trip'),
     path('my_trips', views.my_trips, name = 'my_trips'),
+    path('rideshare_request', views.rideshare_request, name = 'rideshare_request'),
 ]

@@ -180,14 +180,18 @@ def create_trip(request, format=None):
 
         # only add a new trip if the user has no current trips 
         if len(current_trips) == 0: 
+            print('user has no trips')
             new_trip = Trip(student = current_user, dorm = trip_data['dorm'], pickup_time = trip_data['pickup_time'], number_of_bags=trip_data['number_of_bags'])
-
             new_trip.save()
-            return Response(status=200)
         
         # if the user has already created a trip, tell the browser to send an error saying that the user already has a trip created 
         else: 
-            return Response(status=403)
+            print('user has a trip already')
+            current_trips.delete()
+            new_trip = Trip(student = current_user, dorm = trip_data['dorm'], pickup_time = trip_data['pickup_time'], number_of_bags=trip_data['number_of_bags'])
+            new_trip.save()
+
+        return Response(status=200)
 
     # requesting current list of trips 
     if request.method == 'GET':
@@ -215,6 +219,37 @@ def my_trips(request, format=None):
     if request.method == 'POST': 
         pass
 
+@csrf_exempt
+@api_view(['GET', 'POST', 'PUT', 'DELETE'])
+def rideshare_request(request, format = None): 
 
+    # create a new rideshare request 
+    if request.method == 'POST': 
+        # print(request.data)
 
+        # pull data out from request 
+        user_trip = request.data['user_trip']
+        partner_trip = request.data['partner_trip']
+        # print(user_trip, partner_trip)
+
+        # save both trip data into a rideshare request 
+        
+        return Response(status=200)
+
+    # confirm a rideshare request 
+    elif request.method == 'GET': 
+        pass
+        # set rideshare confirmation to True 
+        # delete both trip objects
+
+    # edit the rideshare request
+    elif request.method == 'PUT': 
+        # pull the new rideshare request data 
+        # save the new rideshare request
+        pass 
+
+    elif request.method == "DELETE": 
+        # convert rideshare request data back into 2 Trip objects 
+        # delete the rideshare request 
+        pass
 

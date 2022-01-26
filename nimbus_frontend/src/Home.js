@@ -21,14 +21,15 @@ function Home(){
       }, [token]); 
 
     console.log('data in home', useData())
+    const name = useData()['user']['name']
     
     return(
         <div>
-            <div> token: {token}</div>
             <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
-            <h1> Hi ! Welcome to project nimbus! </h1>
-            <Trips/>
+            <h1> Hi {name}! Welcome to project nimbus! </h1>
             <MyTrips/>
+            <Trips/>
+            
 
         </div>
     )

@@ -16,31 +16,26 @@ export function useData(){
 
 export function DataProvider({children}) {  
 
-
     const {token} = useToken()       
     console.log('id_token in datacontext', token)
     
     // pull all current trips from backend 
-    const [user_trip, setUserTrip] = useState({})
     const tripURL = `${'http://127.0.0.1:8000'}/my_trips`; 
         
     //
-    const [all_trips, setAllTrips] = useState({})
     const newtripURL = `${'http://127.0.0.1:8000'}/create_trip`;
  
     // pull current student data
-    const [student, setStudent] = useState({})
     const studentURL = `${'http://127.0.0.1:8000'}/student_data`;
  
     // pull user data from backend 
-    const [user, setUser] = useState({})
     const userURL = `${'http://127.0.0.1:8000'}/user_data`;
 
     const [data, setData] = useState({
-        'user': user,
-        'student': student,    
-        'other_trips': all_trips,
-        'user_trips': user_trip,     
+        'user': {},
+        'student': {},    
+        'other_trips': {},
+        'user_trips': {},     
     })
 
     //console.log('data before useEffect', data)
@@ -54,92 +49,23 @@ export function DataProvider({children}) {
             }
             const user = await axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('user', user.data)
-            setUser(user.data)
             data['user'] = user.data
 
             const student = await axios.get(studentURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('student', student.data)
-            setStudent(student.data)
             data['student'] = student.data
 
             const user_trips = await axios.get(tripURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('user_trips', user_trips.data)
-            setUserTrip(user_trips.data)
             data['user_trips'] = user_trips.data
 
             const other_trips = await axios.get(newtripURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('other_trips', other_trips.data)
-            setAllTrips(other_trips.data)
             data['other_trips'] = other_trips.data
 
             setData(data)
         }
         fetchData();
-
-        // setData({
-        //     'user': user, 
-        //     'student': student,    
-        //     'other_trips': all_trips,
-        //     'user_trips': user_trip,     
-        // })
-
-
-        // const new_data = { 
-        //     'user': [],
-        //     'student': [], 
-        //     'other_trips': [],
-        //     'user_trips': [],}
-
-        // console.log('useEffect start')
-        // axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
-        //     .then((response) => {
-        //     const user_data = response.data;
-        //     //console.log('user_data', user_data) 
-        //     setUser(prevUser => user_data) 
-        //     new_data['user'] = user_data
-        //     })
-        //     .catch(function (error) {
-        //       }); 
-        // console.log('new_data user', new_data['user'])
-
-        // axios.get(studentURL, { headers: {"Authorization": `Token ${token}`} })
-        //     .then((response) => {
-        //     const student_data = response.data;
-        //     //console.log('student_data', student_data)
-        //     setStudent(student_data)
-        //     new_data['student'] = student_data
-        //     setUserTrip(prevStudent => student_data)
-        //     })
-        //     .catch(function (error) {
-        //     });
-        // console.log('new_data student', new_data['student'])
-
-        // axios.get(tripURL, { headers: {"Authorization": `Token ${token}`} })
-        //     .then((response) => {
-        //     const trip_data = response.data;
-        //     //console.log('my trips', trip_data)
-        //     setUserTrip(prevUser_trip => trip_data)
-        //     new_data['user_trips'] = trip_data
-        //     })  
-        //     .catch(function (error) {
-        //       });  
-        // console.log('new_data user_trips', new_data['user_trips'])
-
-        // axios.get(newtripURL, { headers: {"Authorization": `Token ${token}`} })
-        //     .then((response) => {
-        //     const trip_data = response.data;
-        //     //console.log('trip_data', trip_data)
-        //     setAllTrips(prevAll_trips => trip_data)
-        //     new_data['other_trips'] = trip_data
-        // })
-        // .catch(function (error) {
-        //   }); 
-        
-        // console.log('other_trips user_trips', new_data['other_trips'])
-
-        // console.log("new data", new_data)    
-        // setData(new_data)
-        // console.log("useEffect stop")
     }, [token]); 
 
     return (

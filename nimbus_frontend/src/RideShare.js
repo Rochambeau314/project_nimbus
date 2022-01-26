@@ -13,26 +13,20 @@ function RideShare() {
 
     const [partner, setPartner] = useState('')
     const {state} = useLocation(); 
-    
-
-    console.log('state', state)
+    console.log('state', [state])
           
     const user_trip = useData()['user_trips']
     console.log('user_trip', user_trip)
 
+    const row_data = [state, user_trip[0]]
+    console.log(row_data)
+
     React.useEffect(() => {
         setPartner(state); 
-      }, [state]); 
+      }); 
     
 
     const columns = [ 
-        {
-            field: 'trip_id',
-            headerName: 'trip_id', 
-            type: 'number',
-            width: 150,  
-            editable: false, 
-        },
         {
             field: 'student',
             headerName: 'name',
@@ -61,21 +55,33 @@ function RideShare() {
             editable: false, 
         },  
     ]
-    // table: 
-    // rows: name of both people 
-    // columns: relevant data comparisons 
-    // button to send email 
+
+        // send rideshare request data to backend, redirect to scheduled rideshares 
+        let navigate = useNavigate();
+        const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+        async function handleClick(event) {
+            const rideshare_data = {
+                user_trip: user_trip,
+                partner_trip: state, 
+            }
+            console.log(rideshare_data)
+            axios.post(rideshareRequestURL, rideshare_data, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+            //navigate(`../Home/${id_token}`, { replace: false });
+        };
 
     return(
-        <div style={{ height: 400, width: '100%' }}>
-            <DataGrid
-                    rows={partner} 
+        <div>
+            <div style={{ height: 400, width: '100%' }}>
+            <DataGrid getRowId={row => row.trip_id}
+                    rows={row_data} 
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
                     disableSelectionOnClick={true}/>
-        </div>
-    )
+            </div>
+            <div>{id_token}</div>
+            <Button variant="contained" onClick={handleClick}> Send Request </Button>
+        </div>)
 } 
 
 export default RideShare 

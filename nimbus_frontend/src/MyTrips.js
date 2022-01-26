@@ -13,23 +13,16 @@ function Trips(){
     //console.log(id_token);
 
     //variable for trip data 
-    const [trips, setTrips] = useState([])
+    const my_trip = useData()['user_trips']
 
-    // variable for button text (default vs error)
-    const [message, setMessage] = useState('New Trip')
+    // variable for button text (new trip vs edit trip 
+    let message = "" 
+    if (my_trip.length == 0){
+        message = "New Trip"
 
-    // pull all current trips from backend 
-    const tripURL = `${'http://127.0.0.1:8000'}/my_trips`;
-
-    React.useEffect(() => {
-        axios.get(tripURL, { headers: {"Authorization": `Token ${id_token}`} })
-            .then((response) => {
-            const trip_data = response.data;
-            setTrips(trip_data)
-            //console.log('my trips', trip_data)
-        });
-      }, []);
-     
+    }else{
+        message = "Edit Trip"
+    }
 
     const columns = [
         {
@@ -66,24 +59,25 @@ function Trips(){
     // redirect to New Trip page onSubmit of the New Trip button 
     let navigate = useNavigate();
     async function handleSubmit(event) {
-        if (trips.length == 0){
-            navigate(`../NewTrip/${id_token}`, { replace: false });
-        } else {
-            setMessage('only 1 trip at a time. sorry!')
-        }
+        // redirect to new trip 
+        navigate(`../NewTrip/${id_token}`, { replace: false });
     };
 return(
     <div> 
         <h1>My Trips </h1> 
-        <Button variant="contained" onClick={handleSubmit}> {message} </Button>
-        <div style={{ height: 400, width: '100%' }}>
+        { my_trip
+            ? <div></div>
+            : <Button variant="contained" onClick={handleSubmit}> {"New Trip"} </Button> 
+        }
+        <div style={{ height: 175, width: '100%' }}>
         <DataGrid getRowId={row => row.trip_id}
-            rows={trips}
+            rows={my_trip}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
             checkboxSelection
-            disableSelectionOnClick={true}/>
+            disableSelectionOnClick={true}
+            onRowClick = {handleSubmit}/>
         </div>
     </div>
 
