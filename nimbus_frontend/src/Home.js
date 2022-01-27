@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import logo from './nimbus_recolored.png'
 import Trips from './Trips';
 import MyTrips from './MyTrips';
+import PendingRequests from './PendingRequests'
 import {useData, useDataUpdate} from './DataContext';
 import {useToken} from './AuthContext';
 function Home(){
@@ -27,6 +28,7 @@ function Home(){
         <div>
             <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
             <h1> Hi {name}! Welcome to project nimbus! </h1>
+            <PendingRequests/>
             <MyTrips/>
             <Trips/>
             

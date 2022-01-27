@@ -82,3 +82,15 @@ class Trip(models.Model):
     pickup_time = models.DateTimeField(default=datetime.now())
     number_of_bags = models.TextField(default = "")
 
+class RideshareRequest(models.Model):
+    
+    # trip data of the person who requested the rideshare
+    user = models.TextField(default = "")
+
+    # trip data of the matched person 
+    partner = models.TextField(default = "")
+
+    # if the rideshare was confirmed or not 
+    confirmed = models.BooleanField()
+
+

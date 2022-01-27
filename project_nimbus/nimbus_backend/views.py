@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, permissions, status, request
 from project_nimbus.nimbus_backend.serializers import TripSerializer, UserSerializer, GroupSerializer, StudentSerializer
-from project_nimbus.nimbus_backend.models import Trip
+from project_nimbus.nimbus_backend.models import RideshareRequest, Trip
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 import requests
@@ -228,12 +228,19 @@ def rideshare_request(request, format = None):
         # print(request.data)
 
         # pull data out from request 
-        user_trip = request.data['user_trip']
-        partner_trip = request.data['partner_trip']
+        user_data = request.data['user_trip']
+        partner_data = request.data['partner_trip']
+        # print(user_trip, partner_trip)
+
+        # grab both trip objects 
+        user = user_data[0]['student']
+        partner = partner_data['student']
         # print(user_trip, partner_trip)
 
         # save both trip data into a rideshare request 
-        
+        new_request = RideshareRequest(user = user, partner = partner, confirmed = False)
+        new_request.save() 
+
         return Response(status=200)
 
     # confirm a rideshare request 
