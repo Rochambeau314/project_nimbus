@@ -2,23 +2,23 @@ from django.contrib.auth.models import User, Group
 from rest_framework import serializers
 from project_nimbus.nimbus_backend.models import Student, Trip, RideshareRequest
 
-class StudentSerializer(serializers.HyperlinkedModelSerializer):
+class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['token', 'dorm', 'gender', 'phone_number', 'venmo', 'cashapp']
 
-class RideshareRequestSerializer(serializers.HyperlinkedModelSerializer):
+class RideshareRequestSerializer(serializers.ModelSerializer):
     class Meta:
         model = RideshareRequest
-        fields = ['user_trip', 'partner_trip', 'confirmed']
+        fields = ['ridesharerequest_id','user_user', 'user_trip','partner_user', 'partner_trip', 'confirmed']
 
 
-class TripSerializer(serializers.HyperlinkedModelSerializer):
+class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = ['trip_id', 'student', 'dorm', 'pickup_time', 'number_of_bags']
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     # student = StudentSerializer()
 
     class Meta:
@@ -31,7 +31,7 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
         Student.objects.create(user=user, **student_data)
         return user
 
-class GroupSerializer(serializers.HyperlinkedModelSerializer):
+class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = ['url', 'name']

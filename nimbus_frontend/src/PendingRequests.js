@@ -58,14 +58,16 @@ function PendingRequests() {
 
         // send rideshare request data to backend, redirect to scheduled rideshares 
         let navigate = useNavigate();
-        const rideshareRequestURL = `${'http://127.0.0.1:8000'}/`;
+        const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
         async function handleClick(event) {
-            console.log('request confirmed!')
+            //console.log('request confirmed!')
+            axios.get(rideshareRequestURL, { headers: {"Authorization": `Token ${id_token}`} }) 
             //navigate(`../Home/${id_token}`, { replace: false });
         };
 
     return(
         <div>
+            <div> pending requests </div>
             <div style={{ height: 400, width: '100%' }}>
             <DataGrid getRowId={row => row.trip_id}
                     rows={""} 

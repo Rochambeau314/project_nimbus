@@ -1,7 +1,8 @@
+from re import S
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, permissions, status, request
-from project_nimbus.nimbus_backend.serializers import TripSerializer, UserSerializer, GroupSerializer, StudentSerializer
-from project_nimbus.nimbus_backend.models import RideshareRequest, Trip
+from project_nimbus.nimbus_backend.serializers import RideshareRequestSerializer, TripSerializer, UserSerializer, GroupSerializer, StudentSerializer
+from project_nimbus.nimbus_backend.models import RideshareRequest, Trip, Student
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 import requests
@@ -223,36 +224,53 @@ def my_trips(request, format=None):
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 def rideshare_request(request, format = None): 
 
-    # create a new rideshare request 
+    # create a new rideshare request/edit a rideshare request 
     if request.method == 'POST': 
         # print(request.data)
 
         # pull data out from request 
-        user_data = request.data['user_trip']
-        partner_data = request.data['partner_trip']
-        # print(user_trip, partner_trip)
+        user_name = request.data['user_trip'][0]['student']
+        partner_name = request.data['partner_trip']['student']
+
+        # grab both user objects using names 
+        user_user = User.objects.filter(username = user_name)
+        partner_user = User.objects.filter(username = partner_name)
+        print('user_user', user_user, partner_user)
 
         # grab both trip objects 
-        user = user_data[0]['student']
-        partner = partner_data['student']
-        # print(user_trip, partner_trip)
-
+        user_trip = Trip.objects.filter(student=user_name)
+        partner_trip = Trip.objects.filter(student=partner_name)
+        print('trip objects', user_trip, partner_trip)
+        
         # save both trip data into a rideshare request 
-        new_request = RideshareRequest(user = user, partner = partner, confirmed = False)
+        new_request = RideshareRequest.objects.create(confirmed = False)
+        new_request.user_trip.set(user_trip)
+        new_request.partner_trip.set(partner_trip)
+        new_request.user_user.set(user_user)
+        new_request.partner_user.set(partner_user)
+        
         new_request.save() 
+
 
         return Response(status=200)
 
-    # confirm a rideshare request 
+    # return all rideshare requests that the user is in  
     elif request.method == 'GET': 
-        pass
+        current_user = request.user
+        # print(current_user)
+
+        # # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html
+        rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user) # need to test; not sure if this works in all cases 
+        serializer = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True)
+        print('rideshare requests of the user', serializer.data)
+
+        return Response(data = serializer.data, status = 200)
+
+    # confrim the rideshare request
+    elif request.method == 'PUT': 
         # set rideshare confirmation to True 
         # delete both trip objects
-
-    # edit the rideshare request
-    elif request.method == 'PUT': 
-        # pull the new rideshare request data 
-        # save the new rideshare request
+        # remove both trips from the database and from all other rideshare requests 
         pass 
 
     elif request.method == "DELETE": 

@@ -31,6 +31,9 @@ export function DataProvider({children}) {
     // pull user data from backend 
     const userURL = `${'http://127.0.0.1:8000'}/user_data`;
 
+    // pull pending requests from backend 
+    const pendingrequestsURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+
     const [data, setData] = useState({
         'user': {},
         'student': {},    
@@ -46,6 +49,7 @@ export function DataProvider({children}) {
                 'student': {},    
                 'other_trips': {},
                 'user_trips': {},    
+                'pending_requests': {},
             }
             const user = await axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('user', user.data)
@@ -62,6 +66,9 @@ export function DataProvider({children}) {
             const other_trips = await axios.get(newtripURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('other_trips', other_trips.data)
             data['other_trips'] = other_trips.data
+
+            const pending_requests = await axios.get(pendingrequestsURL, {headers: {"Authorization": `Token ${token}`} })
+            console.log('pending_requests', pending_requests)
 
             setData(data)
         }

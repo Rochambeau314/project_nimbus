@@ -65,20 +65,19 @@ function Trips(){
 return(
     <div> 
         <h1>My Trips </h1> 
-        { my_trip
-            ? <div></div>
-            : <Button variant="contained" onClick={handleSubmit}> {"New Trip"} </Button> 
+        { (my_trip.length > 0)
+            ? <div style={{ height: 175, width: '100%' }}>
+                    <DataGrid getRowId={row => row.trip_id}
+                        rows={my_trip}
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        checkboxSelection
+                        disableSelectionOnClick={true}
+                        onRowClick = {handleSubmit}/>
+                </div>
+            : <Button variant="contained" onClick={handleSubmit}> {"Create a Trip"} </Button> 
         }
-        <div style={{ height: 175, width: '100%' }}>
-        <DataGrid getRowId={row => row.trip_id}
-            rows={my_trip}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            checkboxSelection
-            disableSelectionOnClick={true}
-            onRowClick = {handleSubmit}/>
-        </div>
     </div>
 
 )

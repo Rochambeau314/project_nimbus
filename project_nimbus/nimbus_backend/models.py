@@ -57,7 +57,6 @@ class Student(models.Model):
         instance.student.save()
 
 class Trip(models.Model):
-
     trip_id = models.AutoField(primary_key=True)
 
     student = models.TextField(default = "")
@@ -83,12 +82,20 @@ class Trip(models.Model):
     number_of_bags = models.TextField(default = "")
 
 class RideshareRequest(models.Model):
-    
+
+    ridesharerequest_id = models.AutoField(primary_key=True)
+
+    # user who requested the ridshare 
+    user_user = models.ManyToManyField(User, related_name = 'userstudent')
+
     # trip data of the person who requested the rideshare
-    user = models.TextField(default = "")
+    user_trip = models.ManyToManyField(Trip, related_name = 'user_ridesharerequests') # need to fix and change current value in database
 
     # trip data of the matched person 
-    partner = models.TextField(default = "")
+    partner_user = models.ManyToManyField(User, related_name = 'partnerstudent')
+
+    # trip data of the matched person 
+    partner_trip = models.ManyToManyField(Trip, related_name = 'partner_ridesharerequests') # need to fix and change current value in database
 
     # if the rideshare was confirmed or not 
     confirmed = models.BooleanField()

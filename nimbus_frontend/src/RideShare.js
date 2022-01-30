@@ -66,7 +66,7 @@ function RideShare() {
             }
             console.log(rideshare_data)
             axios.post(rideshareRequestURL, rideshare_data, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
-            //navigate(`../Home/${id_token}`, { replace: false });
+            navigate(`../Home/${id_token}`, { replace: false });
         };
 
     return(
