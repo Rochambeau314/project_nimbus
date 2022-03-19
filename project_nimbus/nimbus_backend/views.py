@@ -44,10 +44,10 @@ class GroupViewSet(viewsets.ModelViewSet):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def user_data(request, format=None):
-    print('user_data has run')
+    # print('user_data has run')
     current_user = request.user
     current_token = request.auth
-    print(current_user, current_token)
+    # print(current_user, current_token)
     data =  {'name': current_user.username, 'email': current_user.email}
     return Response(data=data, status=200)
 
@@ -164,7 +164,7 @@ def student_data(request, format=None):
     current_user = request.user
     student = current_user.student
     serializer = StudentSerializer(student)
-    print(student)
+    # print(student)
     return Response(serializer.data, status=200)
 
 @csrf_exempt
@@ -181,13 +181,13 @@ def create_trip(request, format=None):
 
         # only add a new trip if the user has no current trips 
         if len(current_trips) == 0: 
-            print('user has no trips')
+            # print('user has no trips')
             new_trip = Trip(student = current_user, dorm = trip_data['dorm'], pickup_time = trip_data['pickup_time'], number_of_bags=trip_data['number_of_bags'])
             new_trip.save()
         
         # if the user has already created a trip, tell the browser to send an error saying that the user already has a trip created 
         else: 
-            print('user has a trip already')
+            # print('user has a trip already')
             current_trips.delete()
             new_trip = Trip(student = current_user, dorm = trip_data['dorm'], pickup_time = trip_data['pickup_time'], number_of_bags=trip_data['number_of_bags'])
             new_trip.save()
@@ -199,7 +199,7 @@ def create_trip(request, format=None):
         current_user = request.user 
         trips_list = Trip.objects.exclude(student = current_user.username)
         serializer = TripSerializer(trips_list, many=True)
-        print(serializer.data)
+        # print(serializer.data)
         return Response(serializer.data, status=200)
 
 @csrf_exempt
@@ -211,9 +211,9 @@ def my_trips(request, format=None):
     # send the user's trips
     if request.method == 'GET': 
         trips_list = Trip.objects.filter(student = current_user.username)
-        print('name', current_user.username)
+        # print('name', current_user.username)
         serializer = TripSerializer(trips_list, many=True)
-        print('my_trips', serializer.data)
+        # print('my_trips', serializer.data)
         return Response(serializer.data, status=200)
 
     # delete the specified trip of the user 
@@ -232,39 +232,40 @@ def rideshare_request(request, format = None):
         user_name = request.data['user_trip'][0]['student']
         partner_name = request.data['partner_trip']['student']
 
-        # grab both user objects using names 
-        user_user = User.objects.filter(username = user_name)
-        partner_user = User.objects.filter(username = partner_name)
-        print('user_user', user_user, partner_user)
-
         # grab both trip objects 
-        user_trip = Trip.objects.filter(student=user_name)
-        partner_trip = Trip.objects.filter(student=partner_name)
-        print('trip objects', user_trip, partner_trip)
+        user_trip = Trip.objects.filter(student=user_name)[0]
+        partner_trip = Trip.objects.filter(student=partner_name)[0]
+        # print('trip objects', user_trip, partner_trip)
         
         # save both trip data into a rideshare request 
-        new_request = RideshareRequest.objects.create(confirmed = False)
-        new_request.user_trip.set(user_trip)
-        new_request.partner_trip.set(partner_trip)
-        new_request.user_user.set(user_user)
-        new_request.partner_user.set(partner_user)
-        
-        new_request.save() 
+        new_request = RideshareRequest.objects.create(user_user = user_name, partner_user = partner_name, partner_trip = partner_trip, user_trip = partner_trip, confirmed = False)        
+        new_request.save()
+        # print('new_request', new_request) 
 
+        # new_request.trips.add(user_trip, partner_trip)
 
+        # all_rrs = RideshareRequest.objects.all()
+        # all_rrs.delete()
+
+        # # delete existing ridesharerequest object 
+        # del_rr = RideshareRequest.objects.filter(id=1)
+        # del_rr.delete()
         return Response(status=200)
 
     # return all rideshare requests that the user is in  
     elif request.method == 'GET': 
-        current_user = request.user
+        current_user = request.user.username
         # print(current_user)
 
-        # # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html
+        # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html
         rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user) # need to test; not sure if this works in all cases 
+        print(rr_requests, 'rr_requests')
+        
+
         serializer = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True)
         print('rideshare requests of the user', serializer.data)
 
-        return Response(data = serializer.data, status = 200)
+        return Response(serializer.data, status = 200)
 
     # confrim the rideshare request
     elif request.method == 'PUT': 

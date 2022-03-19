@@ -82,20 +82,16 @@ class Trip(models.Model):
     number_of_bags = models.TextField(default = "")
 
 class RideshareRequest(models.Model):
+    
+    user_trip = models.OneToOneField(Trip, on_delete=models.CASCADE) # need to fix and change current value in database
 
-    ridesharerequest_id = models.AutoField(primary_key=True)
+    partner_trip = models.OneToOneField(Trip, on_delete=models.CASCADE)
 
     # user who requested the ridshare 
-    user_user = models.ManyToManyField(User, related_name = 'userstudent')
-
-    # trip data of the person who requested the rideshare
-    user_trip = models.ManyToManyField(Trip, related_name = 'user_ridesharerequests') # need to fix and change current value in database
+    user_user = models.TextField('') # needed to filter for GET  
 
     # trip data of the matched person 
-    partner_user = models.ManyToManyField(User, related_name = 'partnerstudent')
-
-    # trip data of the matched person 
-    partner_trip = models.ManyToManyField(Trip, related_name = 'partner_ridesharerequests') # need to fix and change current value in database
+    partner_user = models.TextField('') # needed to filter for GET 
 
     # if the rideshare was confirmed or not 
     confirmed = models.BooleanField()

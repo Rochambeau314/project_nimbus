@@ -12,14 +12,17 @@ function PendingRequests() {
     const {name, id_token} = useParams();  
 
     const [partner, setPartner] = useState('')
+
     const {state} = useLocation(); 
     console.log('state', [state])
           
     const user_trip = useData()['user_trips']
     console.log('user_trip', user_trip)
 
-    const row_data = [state, user_trip[0]]
-    console.log(row_data)
+    const pending_req = useData(['pending_requests'])
+    console.log('pending_requests', pending_req)
+
+
 
     React.useEffect(() => {
         setPartner(state); 
@@ -62,7 +65,8 @@ function PendingRequests() {
         async function handleClick(event) {
             //console.log('request confirmed!')
             axios.get(rideshareRequestURL, { headers: {"Authorization": `Token ${id_token}`} }) 
-            //navigate(`../Home/${id_token}`, { replace: false });
+
+            navigate(`../Home/${id_token}`, { replace: false });
         };
 
     return(

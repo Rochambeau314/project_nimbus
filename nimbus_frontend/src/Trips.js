@@ -54,7 +54,7 @@ function Trips(){
 
     ];
 
-    // redirects to specific washer when a washer is clicked 
+    // redirects to specific trip when a trip is clicked 
     let navigate = useNavigate();
     async function handleTripClick(data){ 
         console.log('clicked!', data)

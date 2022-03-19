@@ -7,16 +7,18 @@ class StudentSerializer(serializers.ModelSerializer):
         model = Student
         fields = ['token', 'dorm', 'gender', 'phone_number', 'venmo', 'cashapp']
 
-class RideshareRequestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = RideshareRequest
-        fields = ['ridesharerequest_id','user_user', 'user_trip','partner_user', 'partner_trip', 'confirmed']
-
-
 class TripSerializer(serializers.ModelSerializer):
     class Meta:
         model = Trip
         fields = ['trip_id', 'student', 'dorm', 'pickup_time', 'number_of_bags']
+
+class RideshareRequestSerializer(serializers.ModelSerializer):
+    user_trip = TripSerializer()
+    partner_trip = TripSerializer()
+    class Meta:
+        model = RideshareRequest
+        fields = ['user_user', 'partner_user', 'user_trip', 'partner_trip','confirmed']
+
 
 class UserSerializer(serializers.ModelSerializer):
     # student = StudentSerializer()

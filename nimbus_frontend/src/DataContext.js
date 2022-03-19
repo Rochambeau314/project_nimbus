@@ -39,11 +39,12 @@ export function DataProvider({children}) {
         'student': {},    
         'other_trips': {},
         'user_trips': {},     
+        'pending_requests': {},
     })
 
     //console.log('data before useEffect', data)
     React.useEffect(() => {
-        const fetchData = async () => {
+        const fetchData = async () => {  
             const data = {
                 'user': {},
                 'student': {},    
@@ -69,6 +70,7 @@ export function DataProvider({children}) {
 
             const pending_requests = await axios.get(pendingrequestsURL, {headers: {"Authorization": `Token ${token}`} })
             console.log('pending_requests', pending_requests)
+            data['pending_requests'] = pending_requests.data
 
             setData(data)
         }
