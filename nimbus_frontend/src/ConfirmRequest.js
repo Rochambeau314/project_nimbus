@@ -8,19 +8,20 @@ import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';
 import {useToken} from './AuthContext';
 
-function RideShare() {
-    const {name, id_token} = useParams();  
-
+function ConfirmRequest() {
+    const {id_token} = useParams();
     const {state} = useLocation(); 
-    console.log('state', [state])
-          
+    console.log('uselocation', state)
+
+    const p_trip = [state]
+
     const user_trip = useData()['user_trips']
-    
+    console.log(user_trip)
 
-    const row_data = [state, user_trip[0]]
-    console.log(row_data)
-    
+    const compare_request = user_trip.concat(state)
+    console.log('compare_request', compare_request)
 
+    const compare_data = {user_trip, p_trip}
     const columns = [ 
         {
             field: 'student',
@@ -53,33 +54,32 @@ function RideShare() {
 
         // send rideshare request data to backend, redirect to scheduled rideshares 
         let navigate = useNavigate();
-        const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
-        async function handleClick(event) {
-            const rideshare_data = {
-                user_trip: user_trip,
-                partner_trip: state, 
-            }
-            console.log(rideshare_data)
-            axios.post(rideshareRequestURL, rideshare_data, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+        const confirmRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+        async function handleClick() {
+            axios.put(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+            console.log('request confirmed!')
             //navigate(`../Home/${id_token}`, { replace: false });
         };
 
     return(
         <div>
-            <div style={{ height: 400, width: '100%' }}>
-            <DataGrid getRowId={row => row.trip_id}
-                    rows={row_data} 
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    disableSelectionOnClick={true}/>
-            </div>
-            <div>{id_token}</div>
-            <Button variant="contained" onClick={handleClick}> Send Request </Button>
+            <div> confirm request </div>
+            { (compare_request)
+                ? <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid getRowId={row => row.trip_id}
+                        rows={compare_request} 
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        disableSelectionOnClick={true}/>
+                </div>
+                :<div></div>
+            }
+            <Button variant="contained" onClick={handleClick}> Confirm Request </Button>
         </div>)
 } 
 
-export default RideShare 
+export default ConfirmRequest 
 
 
 // display comparison between current user and the potential rideshare partner 

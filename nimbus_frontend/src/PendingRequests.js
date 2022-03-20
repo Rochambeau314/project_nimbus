@@ -9,26 +9,11 @@ import {useData} from './DataContext';
 import {useToken} from './AuthContext';
 
 function PendingRequests() {
-    const {name, id_token} = useParams();  
+    const {id_token} = useParams();
 
-    const [partner, setPartner] = useState('')
-
-    const {state} = useLocation(); 
-    console.log('state', [state])
-          
-    const user_trip = useData()['user_trips']
-    console.log('user_trip', user_trip)
-
-    const pending_req = useData(['pending_requests'])
-    console.log('pending_requests', pending_req)
-
-
-
-    React.useEffect(() => {
-        setPartner(state); 
-      }); 
+    const pending_req = useData()['pending_requests']
+    console.log('pending_requests', pending_req)  
     
-
     const columns = [ 
         {
             field: 'student',
@@ -62,26 +47,27 @@ function PendingRequests() {
         // send rideshare request data to backend, redirect to scheduled rideshares 
         let navigate = useNavigate();
         const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
-        async function handleClick(event) {
-            //console.log('request confirmed!')
-            axios.get(rideshareRequestURL, { headers: {"Authorization": `Token ${id_token}`} }) 
-
-            navigate(`../Home/${id_token}`, { replace: false });
+        async function handleClick(data) {
+            console.log(data)
+            console.log('redirected to comparison page! ')
+            navigate(`../ConfirmRequest/${data['student']}/${id_token}`, {state: data});
         };
 
     return(
         <div>
             <div> pending requests </div>
-            <div style={{ height: 400, width: '100%' }}>
-            <DataGrid getRowId={row => row.trip_id}
-                    rows={""} 
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    disableSelectionOnClick={true}/>
-            </div>
-            <div>{id_token}</div>
-            <Button variant="contained" onClick={handleClick}> Confirm Request </Button>
+            { (pending_req)
+                ? <div style={{ height: 400, width: '100%' }}>
+                    <DataGrid getRowId={row => row.trip_id}
+                        rows={pending_req} 
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        disableSelectionOnClick={true}
+                        onRowClick={(data) => handleClick(data['row'])}/>
+                </div>
+                :<div></div>
+            }
         </div>)
 } 
 

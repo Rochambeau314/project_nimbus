@@ -238,7 +238,7 @@ def rideshare_request(request, format = None):
         # print('trip objects', user_trip, partner_trip)
         
         # save both trip data into a rideshare request 
-        new_request = RideshareRequest.objects.create(user_user = user_name, partner_user = partner_name, partner_trip = partner_trip, user_trip = partner_trip, confirmed = False)        
+        new_request = RideshareRequest.objects.create(user_user = user_name, partner_user = partner_name, partner_trip = partner_trip, user_trip = user_trip, confirmed = False)        
         new_request.save()
         # print('new_request', new_request) 
 
@@ -258,24 +258,38 @@ def rideshare_request(request, format = None):
         # print(current_user)
 
         # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html
-        rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user) # need to test; not sure if this works in all cases 
+        rr_requests = RideshareRequest.objects.filter(user_user = current_user) # need to test; not sure if this works in all cases 
         print(rr_requests, 'rr_requests')
         
 
         serializer = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True)
         print('rideshare requests of the user', serializer.data)
+        potential_partner_trips = []
+        for rr in serializer.data:
+            potential_partner_trips.append(rr['partner_trip'])
 
-        return Response(serializer.data, status = 200)
+        print('potential_partner_trips', potential_partner_trips)
+        return Response(potential_partner_trips, status = 200)
 
-    # confrim the rideshare request
+    # confirm the rideshare request
     elif request.method == 'PUT': 
-        # set rideshare confirmation to True 
-        # delete both trip objects
-        # remove both trips from the database and from all other rideshare requests 
-        pass 
+        rr_data = request.data
+        print('rr_data', rr_data)
+
+        user = rr_data[0]['student']
+        partner = rr_data[1]['student']
+
+        print(user, partner)
+
+        relevant_rr_req = RideshareRequest.objects.get(user_user = user, partner_user = partner)
+
+        relevant_rr_req.confirmed = True
+
+        relevant_rr_req.save()
+
+        return Response(status = 200)
 
     elif request.method == "DELETE": 
-        # convert rideshare request data back into 2 Trip objects 
         # delete the rideshare request 
         pass
 
