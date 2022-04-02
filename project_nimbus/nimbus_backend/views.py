@@ -269,10 +269,11 @@ def rideshare_request(request, format = None):
         partner_trips = []
         for rr in serializer.data: 
             if rr['user_user'] == current_user: 
-                partner_trips.append(rr['partner_trip']) 
+                partner_trips.append(rr['partner_trip'][0]) 
             else:
-                partner_trips.append(rr['user_trip'])
+                partner_trips.append(rr['user_trip'][0])
 
+        print(partner_trips)
         return(Response(partner_trips, status=200))
 
 

@@ -12,7 +12,7 @@ function PendingRequests() {
     const {id_token} = useParams();
 
     const pending_req = useData()['pending_requests']
-    console.log('pending_requests', pending_req)  
+    console.log('pending_requests', pending_req)
 
     const columns = [ 
         {

@@ -50,7 +50,7 @@ export function DataProvider({children}) {
                 'student': {},    
                 'other_trips': {},
                 'user_trips': {},    
-                'pending_requests': {},
+                'pending_requests': [],
             }
             const user = await axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('user', user.data)
