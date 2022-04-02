@@ -13,11 +13,11 @@ class TripSerializer(serializers.ModelSerializer):
         fields = ['trip_id', 'student', 'dorm', 'pickup_time', 'number_of_bags']
 
 class RideshareRequestSerializer(serializers.ModelSerializer):
-    user_trip = TripSerializer()
-    partner_trip = TripSerializer()
+    user_trip = TripSerializer(many=True)
+    partner_trip = TripSerializer(many=True)
     class Meta:
         model = RideshareRequest
-        fields = ['user_user', 'partner_user', 'user_trip', 'partner_trip','confirmed']
+        fields = ['user_user', 'partner_user', 'user_trip', 'partner_trip', 'confirmed']
 
 
 class UserSerializer(serializers.ModelSerializer):

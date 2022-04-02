@@ -77,7 +77,7 @@ def GoogleOAuth(request, format=None):
         # ask Google for access token 
         response = requests.post('https://oauth2.googleapis.com/token', data=package)
         json_response = response.json()
-        print('json_response', json_response)
+        # print('json_response', json_response)
 
         # isolate the access token from the header and rest of data 
         # access_token = json_response['access_token']
@@ -97,26 +97,26 @@ def GoogleOAuth(request, format=None):
         name = decoded_id_token['name'].replace(" ", "")
         user_email = decoded_id_token['email']
         user_data = name, user_email
-        print(user_data)
+        # print(user_data)
 
         # search users for a current match; already existing --> sign in, no match --> create an account 
 
         users_response = requests.get('http://127.0.0.1:8000/users/') # grab entire list of users 
         users = users_response.json() # convert to json 
-        print('list of users', users)
+        # print('list of users', users)
         
 
 
         # search for match 
         for user in users: 
-            print(name, user['username'], name == user['username'])
-            print(user_email, user['email'], user_email == user['email'])
+            # print(name, user['username'], name == user['username'])
+            # print(user_email, user['email'], user_email == user['email'])
 
             if user['username'] == name and user['email'] == user_email:
                 userobj = User.objects.get(username=name)
-                print(userobj)
+                # print(userobj)
                 # print(userobj.student.token)
-                print('match! sign them in!')
+                # print('match! sign them in!')
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
                 home_link = 'http://127.0.0.1:3000/Home/' + userobj.student.token
@@ -130,7 +130,7 @@ def GoogleOAuth(request, format=None):
             username = name,
             email = user_email)
 
-        print(new_user)
+        # print(new_user)
 
         token = Token.objects.create(user=new_user)
         new_user.student.token = token.key
@@ -233,23 +233,23 @@ def rideshare_request(request, format = None):
         partner_name = request.data['partner_trip']['student']
 
         # grab both trip objects 
-        user_trip = Trip.objects.filter(student=user_name)[0]
-        partner_trip = Trip.objects.filter(student=partner_name)[0]
-        # print('trip objects', user_trip, partner_trip)
+        u_trip = Trip.objects.filter(student=user_name)[0]
+        p_trip = Trip.objects.filter(student=partner_name)[0]
+        # print('trip objects', TripSerializer(u_trip).data, TripSerializer(p_trip).data)
+        # print()
         
         # save both trip data into a rideshare request 
-        new_request = RideshareRequest.objects.create(user_user = user_name, partner_user = partner_name, partner_trip = partner_trip, user_trip = user_trip, confirmed = False)        
+        new_request = RideshareRequest(user_user = user_name, partner_user = partner_name, confirmed = False)
         new_request.save()
-        # print('new_request', new_request) 
+        new_request.user_trip.add(u_trip)
+        new_request.partner_trip.add(p_trip)
 
-        # new_request.trips.add(user_trip, partner_trip)
+        # new_request.partner_trip.add(partner_trip)
+        # new_request.user_trip.add(user_trip)
+        # new_request.save()
 
-        # all_rrs = RideshareRequest.objects.all()
-        # all_rrs.delete()
+        # print("new request", RideshareRequestSerializer(new_request).data)
 
-        # # delete existing ridesharerequest object 
-        # del_rr = RideshareRequest.objects.filter(id=1)
-        # del_rr.delete()
         return Response(status=200)
 
     # return all rideshare requests that the user is in  
@@ -258,18 +258,23 @@ def rideshare_request(request, format = None):
         # print(current_user)
 
         # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html
-        rr_requests = RideshareRequest.objects.filter(user_user = current_user) # need to test; not sure if this works in all cases 
-        print(rr_requests, 'rr_requests')
-        
+        # rr_requests = RideshareRequest.objects.filter(user_user = current_user) # need to test; not sure if this works in all cases 
+        rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user)
+        # print(rr_requests, 'rr_requests')
 
         serializer = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True)
-        print('rideshare requests of the user', serializer.data)
-        potential_partner_trips = []
-        for rr in serializer.data:
-            potential_partner_trips.append(rr['partner_trip'])
 
-        print('potential_partner_trips', potential_partner_trips)
-        return Response(potential_partner_trips, status = 200)
+        print('rr_request', serializer.data)
+
+        partner_trips = []
+        for rr in serializer.data: 
+            if rr['user_user'] == current_user: 
+                partner_trips.append(rr['partner_trip']) 
+            else:
+                partner_trips.append(rr['user_trip'])
+
+        return(Response(partner_trips, status=200))
+
 
     # confirm the rideshare request
     elif request.method == 'PUT': 

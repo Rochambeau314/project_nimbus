@@ -13,7 +13,7 @@ function PendingRequests() {
 
     const pending_req = useData()['pending_requests']
     console.log('pending_requests', pending_req)  
-    
+
     const columns = [ 
         {
             field: 'student',
@@ -48,7 +48,7 @@ function PendingRequests() {
         let navigate = useNavigate();
         const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
         async function handleClick(data) {
-            console.log(data)
+            console.log('PendingRequests --> ConfirmRequest',data)
             console.log('redirected to comparison page! ')
             navigate(`../ConfirmRequest/${data['student']}/${id_token}`, {state: data});
         };

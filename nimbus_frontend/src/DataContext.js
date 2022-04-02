@@ -69,9 +69,9 @@ export function DataProvider({children}) {
             data['other_trips'] = other_trips.data
 
             const pending_requests = await axios.get(pendingrequestsURL, {headers: {"Authorization": `Token ${token}`} })
-            console.log('pending_requests', pending_requests)
-            data['pending_requests'] = pending_requests.data
-
+            const pending_requests_data = pending_requests.data
+            console.log('pending_requests_context', pending_requests_data) 
+            data['pending_requests'] = pending_requests.data  
             setData(data)
         }
         fetchData();

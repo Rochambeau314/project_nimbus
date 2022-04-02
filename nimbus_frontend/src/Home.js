@@ -28,9 +28,10 @@ function Home(){
         <div>
             <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
             <h1> Hi {name}! Welcome to project nimbus! </h1>
+            <MyTrips/>
             <PendingRequests/>
             <Trips/>
-            <MyTrips/>
+
 
             
 

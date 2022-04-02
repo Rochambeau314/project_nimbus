@@ -83,9 +83,9 @@ class Trip(models.Model):
 
 class RideshareRequest(models.Model):
     
-    user_trip = models.OneToOneField(Trip, on_delete=models.CASCADE) # need to fix and change current value in database
+    user_trip = models.ManyToManyField(Trip, related_name = 'u_trip')
 
-    partner_trip = models.OneToOneField(Trip, on_delete=models.CASCADE)
+    partner_trip = models.ManyToManyField(Trip, related_name = 'p_trip')
 
     # user who requested the ridshare 
     user_user = models.TextField('') # needed to filter for GET  
