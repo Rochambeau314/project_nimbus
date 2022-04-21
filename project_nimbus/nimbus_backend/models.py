@@ -80,6 +80,7 @@ class Trip(models.Model):
 
     pickup_time = models.DateTimeField(default=datetime.now())
     number_of_bags = models.TextField(default = "")
+    confirmed = models.BooleanField(default = False)
 
 class RideshareRequest(models.Model):
     

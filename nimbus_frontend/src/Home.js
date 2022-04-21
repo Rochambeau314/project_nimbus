@@ -9,6 +9,7 @@ import MyTrips from './MyTrips';
 import PendingRequests from './PendingRequests'
 import {useData, useDataUpdate} from './DataContext';
 import {useToken} from './AuthContext';
+import ConfirmedRequests from "./ConfirmedRequest";
 function Home(){
 
     // pull the access token from the URL 
@@ -24,6 +25,9 @@ function Home(){
     console.log('data in home', useData())
     const name = useData()['user']['name']
     
+    //const my_trip_confirmed = useData()['user_trips'][0]['confirmed']
+    //console.log('my_trip_confirmed', my_trip_confirmed)
+
     return(
         <div>
             <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
@@ -31,6 +35,7 @@ function Home(){
             <MyTrips/>
             <PendingRequests/>
             <Trips/>
+            <ConfirmedRequests/> 
 
 
             

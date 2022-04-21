@@ -28,7 +28,6 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-
 class GroupViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows groups to be viewed or edited.
@@ -36,9 +35,6 @@ class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-
-
-
 
 @csrf_exempt
 @api_view(['GET'])
@@ -50,7 +46,6 @@ def user_data(request, format=None):
     # print(current_user, current_token)
     data =  {'name': current_user.username, 'email': current_user.email}
     return Response(data=data, status=200)
-
 
 @csrf_exempt
 @api_view(['GET'])
@@ -171,7 +166,6 @@ def student_data(request, format=None):
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])
 def create_trip(request, format=None):
-
     # adding a new trip
     if request.method == 'POST':
         trip_data = request.data
@@ -198,8 +192,10 @@ def create_trip(request, format=None):
         current_user = request.user # grab current user 
 
         # list of trips without own trip 
-        trips_list = Trip.objects.exclude(student = current_user.username)
+        trips_list = Trip.objects.exclude(student = current_user.username).exclude(confirmed = True)
         serializer = TripSerializer(trips_list, many=True)
+
+        # TODO: list of trips without own trip AND trips that have already been confirmed 
 
         # remove any trips already in the user's rideshare requests 
         rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user) # grab all relevant rr_requests
@@ -301,13 +297,24 @@ def rideshare_request(request, format = None):
         partner = rr_data[1]['student']
 
         print(user, partner)
-
+        # change status of RideshareRequest to confirmed 
         relevant_rr_req = RideshareRequest.objects.filter(user_user = user, partner_user = partner) | RideshareRequest.objects.filter(user_user = partner, partner_user = user)
         print(relevant_rr_req)
         req_obj = relevant_rr_req.first()
         req_obj.confirmed = True
         req_obj.save()
         # print(RideshareRequestSerializer(relevant_rr_req))
+
+        # TODO: mark both associated Trip objects as confirmed 
+        trip_one = Trip.objects.get(student = user)
+        print(trip_one)
+        trip_one.confirmed = True
+        trip_one.save()
+
+        trip_two = Trip.objects.get(student=partner)
+        print(trip_two)
+        trip_two.confirmed = True 
+        trip_two.save()
 
         return Response(status = 200)
 
