@@ -174,7 +174,6 @@ def create_trip(request, format=None):
 
     # adding a new trip
     if request.method == 'POST':
-        
         trip_data = request.data
         current_user = request.user 
         current_trips = Trip.objects.filter(student = current_user.username)
@@ -196,10 +195,21 @@ def create_trip(request, format=None):
 
     # requesting current list of trips 
     if request.method == 'GET':
-        current_user = request.user 
+        current_user = request.user # grab current user 
+
+        # list of trips without own trip 
         trips_list = Trip.objects.exclude(student = current_user.username)
         serializer = TripSerializer(trips_list, many=True)
-        # print(serializer.data)
+
+        # remove any trips already in the user's rideshare requests 
+        rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user) # grab all relevant rr_requests
+        serializer2 = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True) # serialize rr_request data 
+
+        for rr in serializer2.data: 
+            print(rr)
+            if rr in serializer.data: 
+                print('need to remove:', rr)
+
         return Response(serializer.data, status=200)
 
 @csrf_exempt
@@ -223,7 +233,6 @@ def my_trips(request, format=None):
 @csrf_exempt
 @api_view(['GET', 'POST', 'PUT', 'DELETE'])
 def rideshare_request(request, format = None): 
-
     # create a new rideshare request/edit a rideshare request 
     if request.method == 'POST': 
         # print(request.data)
@@ -258,22 +267,28 @@ def rideshare_request(request, format = None):
         # print(current_user)
 
         # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html
-        # rr_requests = RideshareRequest.objects.filter(user_user = current_user) # need to test; not sure if this works in all cases 
         rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user)
         # print(rr_requests, 'rr_requests')
 
         serializer = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True)
 
-        print('rr_request', serializer.data)
+        # print('rr_request', serializer.data)
 
         partner_trips = []
+
         for rr in serializer.data: 
-            if rr['user_user'] == current_user: 
+            if rr['confirmed']: 
+                if rr['user_user'] == current_user: 
+                    return(Response(rr['partner_trip']))
+                else:
+                    return(Response(rr['user_trip']))
+
+            elif rr['user_user'] == current_user: 
                 partner_trips.append(rr['partner_trip'][0]) 
             else:
                 partner_trips.append(rr['user_trip'][0])
 
-        print(partner_trips)
+        # print(partner_trips)
         return(Response(partner_trips, status=200))
 
 
@@ -287,11 +302,12 @@ def rideshare_request(request, format = None):
 
         print(user, partner)
 
-        relevant_rr_req = RideshareRequest.objects.get(user_user = user, partner_user = partner)
-
-        relevant_rr_req.confirmed = True
-
-        relevant_rr_req.save()
+        relevant_rr_req = RideshareRequest.objects.filter(user_user = user, partner_user = partner) | RideshareRequest.objects.filter(user_user = partner, partner_user = user)
+        print(relevant_rr_req)
+        req_obj = relevant_rr_req.first()
+        req_obj.confirmed = True
+        req_obj.save()
+        # print(RideshareRequestSerializer(relevant_rr_req))
 
         return Response(status = 200)
 
