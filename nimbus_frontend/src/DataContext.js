@@ -34,12 +34,16 @@ export function DataProvider({children}) {
     // pull pending requests from backend 
     const pendingrequestsURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
 
+    // pull confirmed request
+    const confirmedrequestsURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
+
     const [data, setData] = useState({
         'user': {},
         'student': {},    
         'other_trips': {},
         'user_trips': {},     
         'pending_requests': {},
+        'confirmed_request': {},
     })
 
     //console.log('data before useEffect', data)
@@ -51,6 +55,7 @@ export function DataProvider({children}) {
                 'other_trips': {},
                 'user_trips': {},    
                 'pending_requests': [],
+                'confirmed_request': {}
             }
             const user = await axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('user', user.data)
@@ -72,6 +77,11 @@ export function DataProvider({children}) {
             const pending_requests_data = pending_requests.data
             console.log('pending_requests_context', pending_requests_data) 
             data['pending_requests'] = pending_requests.data  
+
+            const confirmed_request = await axios.get(confirmedrequestsURL, {headers: {"Authorization": `Token ${token}`} })
+            const confirmed_request_data = confirmed_request.data
+            console.log('confirmed_requests_context', confirmed_request_data) 
+            data['confirmed_request'] = confirmed_request.data  
             setData(data)
         }
         fetchData();

@@ -322,3 +322,25 @@ def rideshare_request(request, format = None):
         # delete the rideshare request 
         pass
 
+@csrf_exempt
+@api_view(['GET'])
+def confirmed_request(request, format = None): 
+    # create a new rideshare request/edit a rideshare request 
+    if request.method == 'GET': 
+        print('get')
+
+        current_user = request.user.username
+        # print(current_user)
+
+        # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html 
+        confirmed_req = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user)
+        print(confirmed_req, 'confirmed_req')
+
+        serializer = RideshareRequestSerializer(confirmed_req, context={'request': request}, many=True)
+        print('confirmed_req_data', serializer.data)
+        
+        # return actual data if exists; if not, return empty list 
+        if serializer.data:
+            return(Response(serializer.data[0], status=200))
+        else: 
+            return(Response(serializer.data, status=200))

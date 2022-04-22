@@ -25,21 +25,22 @@ function Home(){
     console.log('data in home', useData())
     const name = useData()['user']['name']
     
-    //const my_trip_confirmed = useData()['user_trips'][0]['confirmed']
-    //console.log('my_trip_confirmed', my_trip_confirmed)
+    const my_trip_confirmed = useData()['confirmed_request'][0]
+    console.log('confirmed_request', my_trip_confirmed)
 
     return(
         <div>
             <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
             <h1> Hi {name}! Welcome to project nimbus! </h1>
-            <MyTrips/>
-            <PendingRequests/>
-            <Trips/>
-            <ConfirmedRequests/> 
 
-
-            
-
+            { (my_trip_confirmed)
+                ? <ConfirmedRequests/> 
+                : <div>
+                    <MyTrips/>
+                    <PendingRequests/>
+                    <Trips/>
+                </div> 
+            }
         </div>
     )
 }

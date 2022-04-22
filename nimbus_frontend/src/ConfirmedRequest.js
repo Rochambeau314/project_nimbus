@@ -12,7 +12,8 @@ import {useToken} from './AuthContext';
 // shows up when a user's trip has Confirmed == True 
 // displays the rideshare request data associated with the user's trip 
 function ConfirmedRequests(){
-
+    console.log('partner_trip', useData()['pending_requests'])
+    console.log('user_trips', useData()['user_trips'])
     return(
         <div>
             my_trip

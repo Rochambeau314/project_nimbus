@@ -83,16 +83,16 @@ class Trip(models.Model):
     confirmed = models.BooleanField(default = False)
 
 class RideshareRequest(models.Model):
-    
-    user_trip = models.ManyToManyField(Trip, related_name = 'u_trip')
-
-    partner_trip = models.ManyToManyField(Trip, related_name = 'p_trip')
 
     # user who requested the ridshare 
     user_user = models.TextField('') # needed to filter for GET  
 
     # trip data of the matched person 
     partner_user = models.TextField('') # needed to filter for GET 
+    
+    user_trip = models.ManyToManyField(Trip, related_name = 'u_trip')
+
+    partner_trip = models.ManyToManyField(Trip, related_name = 'p_trip')
 
     # if the rideshare was confirmed or not 
     confirmed = models.BooleanField()
