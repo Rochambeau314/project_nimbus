@@ -25,7 +25,7 @@ function Home(){
     console.log('data in home', useData())
     const name = useData()['user']['name']
     
-    const my_trip_confirmed = useData()['confirmed_request'][0]
+    const my_trip_confirmed = useData()['confirmed_request']
     console.log('confirmed_request', my_trip_confirmed)
 
     return(

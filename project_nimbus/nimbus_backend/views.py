@@ -288,8 +288,71 @@ def rideshare_request(request, format = None):
         return(Response(partner_trips, status=200))
 
 
-    # confirm the rideshare request
+    # return a specific rideshare request
     elif request.method == 'PUT': 
+
+        print(request.data)
+
+        # grab names 
+        user_name = request.data['user_trip'][0]['student']
+        partner_name = request.data['partner_trip'][0]['student']
+
+        print('PUT', user_name, partner_name)
+
+        # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html
+        rr_requests = RideshareRequest.objects.filter(user_user = user_name) | RideshareRequest.objects.filter(partner_user = user_name)
+        # print(rr_requests, 'rr_requests')
+
+        serializer = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True)
+
+        print('specific rideshare request', serializer.data[0])
+        return Response(serializer.data[0], status = 200)
+ 
+    elif request.method == "DELETE": 
+        # delete the rideshare request  
+        pass
+
+"""
+returns the rideshare request data given the user and the partner names 
+"""
+"""@api_view(['GET'])
+def confirm_rideshare(request, format = None): 
+    if request.method == "GET": 
+        cr_data = request.data 
+        user = cr_data[0]
+        partner = cr_data[1]
+
+        rr_request = RideshareRequest.objects.filter(user_user = user) | RideshareRequest.objects.filter(partner_user = user)
+
+        return
+"""
+
+
+        
+@csrf_exempt
+@api_view(['GET', 'POST'])
+def confirmed_request(request, format = None): 
+    # create a new rideshare request/edit a rideshare request 
+    if request.method == 'GET': 
+        print('get')
+
+        current_user = request.user.username
+        # print(current_user)
+
+        # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html 
+        confirmed_req = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user)
+        # print(confirmed_req, 'confirmed_req')
+
+        serializer = RideshareRequestSerializer(confirmed_req, context={'request': request}, many=True)
+        # print('confirmed_req_data', serializer.data)
+        
+        # return actual data if exists; if not, return empty list 
+        if serializer.data:
+            return(Response(serializer.data[0], status=200))
+        else: 
+            return(Response(serializer.data, status=200))
+    if request.method == "POST": 
+        # confirm the rideshare request: 
         rr_data = request.data
         print('rr_data', rr_data)
 
@@ -317,30 +380,3 @@ def rideshare_request(request, format = None):
         trip_two.save()
 
         return Response(status = 200)
-
-    elif request.method == "DELETE": 
-        # delete the rideshare request 
-        pass
-
-@csrf_exempt
-@api_view(['GET'])
-def confirmed_request(request, format = None): 
-    # create a new rideshare request/edit a rideshare request 
-    if request.method == 'GET': 
-        print('get')
-
-        current_user = request.user.username
-        # print(current_user)
-
-        # https://books.agiliq.com/projects/django-orm-cookbook/en/latest/or_query.html 
-        confirmed_req = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user)
-        print(confirmed_req, 'confirmed_req')
-
-        serializer = RideshareRequestSerializer(confirmed_req, context={'request': request}, many=True)
-        print('confirmed_req_data', serializer.data)
-        
-        # return actual data if exists; if not, return empty list 
-        if serializer.data:
-            return(Response(serializer.data[0], status=200))
-        else: 
-            return(Response(serializer.data, status=200))

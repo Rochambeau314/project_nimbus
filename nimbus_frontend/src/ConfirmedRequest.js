@@ -12,11 +12,62 @@ import {useToken} from './AuthContext';
 // shows up when a user's trip has Confirmed == True 
 // displays the rideshare request data associated with the user's trip 
 function ConfirmedRequests(){
-    console.log('partner_trip', useData()['pending_requests'])
-    console.log('user_trips', useData()['user_trips'])
+    const confirmed_request = useData()['confirmed_request']
+    //console.log(confirmed_request, 'confirmed_request')
+
+    const confirmed_user_trip = confirmed_request['user_trip']
+    console.log('confirmed_user_trip', confirmed_user_trip)
+
+    const confirmed_partner_trip = confirmed_request['partner_trip']
+    console.log('confirmed_partner_trip', confirmed_partner_trip)
+
+    const confirmed_req_trips = confirmed_user_trip.concat(confirmed_partner_trip)
+    console.log('confirmed_req_trips', confirmed_req_trips)
+    const columns = [
+        {
+            field: 'student',
+            headerName: 'name',
+            width: 150,
+            editable: false,
+        },
+        {
+            field: 'dorm',
+            headerName: 'dorm',
+            width: 150,
+            editable: false,
+        },
+        {
+            field: 'pickup_time',
+            headerName: 'time',
+            type: 'dateTime',
+            width: 200, 
+            valueGetter: ({ value }) => value && new Date(value),
+            editable: false,
+        },
+        {
+            field: 'number_of_bags',
+            headerName: 'luggage',
+            type: 'number',
+            width: 110,
+            editable: false, 
+        },  
+    ]
+
     return(
         <div>
-            my_trip
+            { (confirmed_request)
+                ?
+                <div style={{ height: 400, width: '100%' }}>
+                    <div>Confirmed Rideshare</div> 
+                    <DataGrid getRowId={row => row.trip_id}
+                        rows={confirmed_req_trips} 
+                        columns={columns}
+                        pageSize={5}
+                        rowsPerPageOptions={[5]}
+                        disableSelectionOnClick={true}/>
+                </div>
+                :<div></div>
+            }
         </div>
     )
 }
