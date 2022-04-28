@@ -194,19 +194,25 @@ def create_trip(request, format=None):
         # list of trips without own trip 
         trips_list = Trip.objects.exclude(student = current_user.username).exclude(confirmed = True)
         serializer = TripSerializer(trips_list, many=True)
+        trips_data = serializer.data
 
-        # TODO: list of trips without own trip AND trips that have already been confirmed 
-
-        # remove any trips already in the user's rideshare requests 
+        # grab all rideshare requests involving the user 
         rr_requests = RideshareRequest.objects.filter(user_user = current_user) | RideshareRequest.objects.filter(partner_user = current_user) # grab all relevant rr_requests
         serializer2 = RideshareRequestSerializer(rr_requests, context={'request': request}, many=True) # serialize rr_request data 
 
-        for rr in serializer2.data: 
-            print(rr)
-            if rr in serializer.data: 
-                print('need to remove:', rr)
-
-        return Response(serializer.data, status=200)
+        # remove any trips already in the user's rideshare requests 
+        for rr_data in serializer2.data: 
+            print(rr_data['user_trip'])
+            if rr_data['user_trip'][0] in trips_data:
+                print('user_trip removed')
+                trips_data.remove(rr_data['user_trip'][0])
+    
+            elif rr_data['partner_trip'][0] in trips_data: 
+                print('partner_trip removed')
+                trips_data.remove(rr_data['partner_trip'][0])
+                
+        print('trips_data', trips_data)
+        return Response(trips_data, status=200)
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
