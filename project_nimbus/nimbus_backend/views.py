@@ -1,4 +1,5 @@
 from re import S
+import re
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, permissions, status, request
 from project_nimbus.nimbus_backend.serializers import RideshareRequestSerializer, TripSerializer, UserSerializer, GroupSerializer, StudentSerializer
@@ -16,8 +17,18 @@ from rest_framework.permissions import IsAuthenticated, AllowAny  # <-- Here
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 
+# mike perez 
+
 from project_nimbus.nimbus_backend.secrets import client_secret
 
+# warning/user agreement that 
+# "honor the agency of the user "
+
+# men 
+# women 
+# trans/gender queer/gender nonbinary 
+# Other 
+# prefer not to say 
 
 # Create your views here.
 class UserViewSet(viewsets.ModelViewSet):
@@ -314,29 +325,25 @@ def rideshare_request(request, format = None):
         print('specific rideshare request', serializer.data[0])
         return Response(serializer.data[0], status = 200)
  
+     # delete the unconfirmed rideshare request
     elif request.method == "DELETE": 
-        # delete the rideshare request  
-        pass
+        print('data in delete', request.data)
+        # grab relevant data
 
-"""
-returns the rideshare request data given the user and the partner names 
-"""
-"""@api_view(['GET'])
-def confirm_rideshare(request, format = None): 
-    if request.method == "GET": 
-        cr_data = request.data 
-        user = cr_data[0]
-        partner = cr_data[1]
+        user_name = request.data['rideshare_data']['user_trip'][0]['student']
+        partner_name = request.data['rideshare_data']['partner_trip'][0]['student']
+        print('DELETE', user_name, partner_name)
 
-        rr_request = RideshareRequest.objects.filter(user_user = user) | RideshareRequest.objects.filter(partner_user = user)
+        # delete the specific request 
+        rr_request = RideshareRequest.objects.filter(user_user = user_name) | RideshareRequest.objects.filter(partner_user = user_name)
+        print(rr_request)
+        # print(RideshareRequestSerializer(rr_request, many=True).data)
+        rr_request.delete()
 
-        return
-"""
-
-
+        return Response(status=200)
         
 @csrf_exempt
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'POST', 'DELETE'])
 def confirmed_request(request, format = None): 
     # create a new rideshare request/edit a rideshare request 
     if request.method == 'GET': 
@@ -357,7 +364,7 @@ def confirmed_request(request, format = None):
             return(Response(serializer.data[0], status=200))
         else: 
             return(Response(serializer.data, status=200))
-    if request.method == "POST": 
+    elif request.method == "POST": 
         # confirm the rideshare request: 
         rr_data = request.data
         print('rr_data', rr_data)
@@ -384,5 +391,35 @@ def confirmed_request(request, format = None):
         print(trip_two)
         trip_two.confirmed = True 
         trip_two.save()
+    
+    # delete a confirmed request
+    elif request.method == 'DELETE': 
+        print(request.data)
+        # grab relevant data
 
-        return Response(status = 200)
+        user_name = request.data['rideshare_data']['user_trip'][0]['student']
+        partner_name = request.data['rideshare_data']['partner_trip'][0]['student']
+        print('DELETE', user_name, partner_name)
+
+        rr_request = RideshareRequest.objects.filter(user_user = user_name) | RideshareRequest.objects.filter(partner_user = user_name)
+        print('del rr_request', rr_request)
+
+        print(RideshareRequestSerializer(rr_request, many=True).data)
+
+        # mark both trips inside the request as unconfirmed 
+        u_trip = Trip.objects.get(student = user_name)
+        print(u_trip)
+        u_trip.confirmed = False
+        u_trip.save()
+
+        p_trip = Trip.objects.get(student = partner_name)
+        print(p_trip)
+        p_trip.confirmed = False
+        p_trip.save()
+
+        # delete the specific request 
+        rr_request.delete()
+
+        # print(RideshareRequestSerializer(rr_request).data)
+
+        return Response(status=200)

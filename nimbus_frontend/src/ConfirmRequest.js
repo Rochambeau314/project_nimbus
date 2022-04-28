@@ -82,9 +82,10 @@ function ConfirmRequest() {
 
     // send rideshare request data to backend, redirect to scheduled rideshares 
     let navigate = useNavigate();
+
     const [message, setMessage] = useState("")
     const confirmRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
-    async function handleClick() {
+    async function handleConfirm() {
         if(Object.is(user_trip[0]['student'], specific['user_trip'][0]['student'])) {
             console.log('user created the request; redirect to home')
         }
@@ -92,6 +93,20 @@ function ConfirmRequest() {
             axios.post(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
             console.log('request confirmed!')
         }
+        navigate(`../Home/${id_token}`, { replace: false });
+    };
+
+    const deleteRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+    async function handleDelete() {
+        const rideshare_data = {
+            user_trip: user_trip,
+            partner_trip: partner_trip, 
+        }
+        console.log(rideshare_data)
+        axios.delete(deleteRequestURL, { headers: {"Authorization": `Token ${id_token}`}, "data": {rideshare_data} }) // need to check if succeeded before redirecting
+        console.log('submitted a delete request')
+
+        // redirect to home 
         navigate(`../Home/${id_token}`, { replace: false });
     };
     
@@ -109,7 +124,8 @@ function ConfirmRequest() {
                 </div>
                 :<div></div>
             }
-            <Button variant="contained" onClick={handleClick}> {message} </Button>
+            <Button variant="contained" onClick={handleConfirm}> {message} </Button>
+            <Button variant="contained" onClick={handleDelete}> delete </Button>
         </div>)
 } 
 

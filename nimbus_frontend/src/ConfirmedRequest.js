@@ -12,6 +12,9 @@ import {useToken} from './AuthContext';
 // shows up when a user's trip has Confirmed == True 
 // displays the rideshare request data associated with the user's trip 
 function ConfirmedRequests(){
+    const {name, id_token} = useParams();  
+
+
     const confirmed_request = useData()['confirmed_request']
     //console.log(confirmed_request, 'confirmed_request')
 
@@ -60,6 +63,19 @@ function ConfirmedRequests(){
             editable: false, 
         },  
     ]
+    const deleteRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
+    async function handleDelete() {
+        const rideshare_data = {
+            user_trip: confirmed_user_trip,
+            partner_trip: confirmed_partner_trip, 
+        }
+        console.log(rideshare_data)
+        axios.delete(deleteRequestURL, { headers: {"Authorization": `Token ${id_token}`}, "data": {rideshare_data} }) // need to check if succeeded before redirecting
+        console.log('submitted a delete request')
+
+        // redirect to home 
+        //navigate(`../Home/${id_token}`, { replace: false });
+    };
 
     return(
         <div>
@@ -70,7 +86,10 @@ function ConfirmedRequests(){
                         columns={columns}
                         pageSize={5}
                         rowsPerPageOptions={[5]}
-                        disableSelectionOnClick={true}/>
+                        disableSelectionOnClick={true}
+                    />
+                    <Button variant="contained" onClick={handleDelete}> delete </Button>
+
                 </div>
                 :<div></div>
             }
