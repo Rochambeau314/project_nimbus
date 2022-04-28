@@ -21,8 +21,16 @@ function ConfirmedRequests(){
     const confirmed_partner_trip = confirmed_request['partner_trip']
     console.log('confirmed_partner_trip', confirmed_partner_trip)
 
-    const confirmed_req_trips = confirmed_user_trip.concat(confirmed_partner_trip)
-    console.log('confirmed_req_trips', confirmed_req_trips)
+    let confirmed_req_trips = {}
+    if (typeof confirmed_partner_trip === 'undefined'){
+        console.log('confirmed_request === undefined')
+    }
+    else {
+        console.log('confirmed_request != undefined')
+        confirmed_req_trips = confirmed_user_trip.concat(confirmed_partner_trip)
+        console.log('confirmed_req_trips', confirmed_req_trips)
+    }
+
     const columns = [
         {
             field: 'student',
@@ -55,10 +63,8 @@ function ConfirmedRequests(){
 
     return(
         <div>
-            { (confirmed_request)
-                ?
-                <div style={{ height: 400, width: '100%' }}>
-                    <div>Confirmed Rideshare</div> 
+            { (confirmed_req_trips)
+                ? <div style={{ height: 400, width: '100%' }}>
                     <DataGrid getRowId={row => row.trip_id}
                         rows={confirmed_req_trips} 
                         columns={columns}

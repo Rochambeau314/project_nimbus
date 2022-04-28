@@ -16,7 +16,7 @@ function Home(){
     const {id_token} = useParams();
     console.log('id_token', id_token);
 
-    const {token, setToken} = useToken();  
+    const {token, setToken} = useToken();   
 
     React.useEffect(() => {
         setToken(id_token); 
@@ -28,12 +28,14 @@ function Home(){
     const my_trip_confirmed = useData()['confirmed_request']
     console.log('confirmed_request', my_trip_confirmed)
 
+    const confirmed = useData()['confirmed_request']['confirmed']
+
     return(
         <div>
             <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
             <h1> Hi {name}! Welcome to project nimbus! </h1>
 
-            { (my_trip_confirmed)
+            { (confirmed)
                 ? <ConfirmedRequests/> 
                 : <div>
                     <MyTrips/>
