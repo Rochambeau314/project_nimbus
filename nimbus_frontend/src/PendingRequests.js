@@ -46,7 +46,6 @@ function PendingRequests() {
 
         // send rideshare request data to backend, redirect to scheduled rideshares 
         let navigate = useNavigate();
-        const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
         async function handleClick(data) {
             console.log('PendingRequests --> ConfirmRequest',data)
             console.log('redirected to comparison page! ')

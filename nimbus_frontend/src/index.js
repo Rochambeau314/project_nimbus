@@ -7,7 +7,9 @@ import reportWebVitals from './reportWebVitals';
 
 ReactDOM.render(
   
-  <BrowserRouter>
+  <BrowserRouter
+  forceRefresh={true}
+  >
     <App />
 </BrowserRouter>,
 

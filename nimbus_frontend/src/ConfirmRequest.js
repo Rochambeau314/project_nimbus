@@ -82,6 +82,7 @@ function ConfirmRequest() {
 
     // send rideshare request data to backend, redirect to scheduled rideshares 
     let navigate = useNavigate();
+    const messageURL = `${'http://127.0.0.1:8000'}/send_email/`
 
     const [message, setMessage] = useState("")
     const confirmRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
@@ -90,10 +91,13 @@ function ConfirmRequest() {
             console.log('user created the request; redirect to home')
         }
         else{
-            axios.post(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+            //axios.post(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+            axios.put(messageURL, compare_data, { headers: {"Authorization": `Token ${id_token}`} }) // send email to the partner notifying them that they have a new rr_request 
             console.log('request confirmed!')
+
+
         }
-        //(`../Home/${id_token}`, { replace: false });
+        //navigate(`../Home/${id_token}`, { replace: false });
     };
 
     const deleteRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
@@ -104,10 +108,12 @@ function ConfirmRequest() {
         }
         console.log(rideshare_data)
         axios.delete(deleteRequestURL, { headers: {"Authorization": `Token ${id_token}`}, "data": {rideshare_data} }) // need to check if succeeded before redirecting
+        axios.delete(messageURL, { headers: {"Authorization": `Token ${id_token}`}, 'data': rideshare_data }) // send email to the partner notifying them that they have a new rr_request 
+
         console.log('submitted a delete request')
 
         // redirect to home 
-        //navigate(`../Home/${id_token}`, { replace: false });
+        navigate(`../Home/${id_token}`, { replace: false });
     };
     
     return(

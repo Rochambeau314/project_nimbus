@@ -36,5 +36,7 @@ urlpatterns = [
     path('my_trips', views.my_trips, name = 'my_trips'),
     path('rideshare_request', views.rideshare_request, name = 'rideshare_request'),
     path('confirmed_request', views.confirmed_request, name = 'confirmed_request'),
+    path('send_email/', views.send_email, name = 'send_email'),
+
 
 ]

@@ -54,6 +54,7 @@ function RideShare() {
         // send rideshare request data to backend, redirect to scheduled rideshares 
         let navigate = useNavigate();
         const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+        const messageURL = `${'http://127.0.0.1:8000'}/send_email/`
         async function handleClick(event) {
             const rideshare_data = {
                 user_trip: user_trip,
@@ -61,6 +62,7 @@ function RideShare() {
             }
             console.log(rideshare_data)
             axios.post(rideshareRequestURL, rideshare_data, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+            axios.delete(messageURL, state, { headers: {"Authorization": `Token ${id_token}`} }) // send email to the partner notifying them that the request was deleted
             navigate(`../Home/${id_token}`, { replace: false });
         };
 
