@@ -364,6 +364,7 @@ def confirmed_request(request, format = None):
             return(Response(serializer.data[0], status=200))
         else: 
             return(Response(serializer.data, status=200))
+
     elif request.method == "POST": 
         # confirm the rideshare request: 
         rr_data = request.data
@@ -379,7 +380,6 @@ def confirmed_request(request, format = None):
         req_obj = relevant_rr_req.first()
         req_obj.confirmed = True
         req_obj.save()
-        # print(RideshareRequestSerializer(relevant_rr_req))
 
         # TODO: mark both associated Trip objects as confirmed 
         trip_one = Trip.objects.get(student = user)
@@ -391,7 +391,21 @@ def confirmed_request(request, format = None):
         print(trip_two)
         trip_two.confirmed = True 
         trip_two.save()
-    
+
+        # delete all unconfirmed requests that included the 2 users that were just marked as confirmed, but not the one including both users 
+        
+        rr_req_all = RideshareRequest.objects.filter(user_user = user) | RideshareRequest.objects.filter(partner_user = user) | RideshareRequest.objects.filter(user_user = partner) | RideshareRequest.objects.filter(partner_user = partner)
+        # print(RideshareRequestSerializer(rr_req_user, many=True).data)
+
+        for rr in rr_req_all: 
+            print('rr user and partner', (rr.user_user, user, rr.partner_user, partner))
+            if rr.confirmed != True: 
+                # delete the rr_request 
+                rr.delete()
+            # print(RideshareRequestSerializer(rr).data)
+
+        return Response(status=200)
+
     # delete a confirmed request
     elif request.method == 'DELETE': 
         print(request.data)

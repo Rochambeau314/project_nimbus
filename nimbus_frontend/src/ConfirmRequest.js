@@ -93,7 +93,7 @@ function ConfirmRequest() {
             axios.post(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
             console.log('request confirmed!')
         }
-        navigate(`../Home/${id_token}`, { replace: false });
+        //(`../Home/${id_token}`, { replace: false });
     };
 
     const deleteRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
@@ -107,7 +107,7 @@ function ConfirmRequest() {
         console.log('submitted a delete request')
 
         // redirect to home 
-        navigate(`../Home/${id_token}`, { replace: false });
+        //navigate(`../Home/${id_token}`, { replace: false });
     };
     
     return(
