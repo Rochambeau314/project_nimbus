@@ -34,6 +34,30 @@ function ConfirmedRequests(){
         console.log('confirmed_req_trips', confirmed_req_trips)
     }
 
+    // grab data of both parties after confirmed 
+    const studentDataURL = `${'http://127.0.0.1:8000'}/student_data`;
+    const [user, setUser] = useState();
+    const [partner, setPartner] = useState();
+    React.useEffect(() => {
+        axios.post(studentDataURL, confirmed_user_trip[0]['student'], { headers: {"Authorization": `Token  ${id_token}`} })
+            .then((response) => {
+            const user_data = response.data;
+            console.log(user_data)
+            console.log('testing')
+            setUser(user_data)
+
+        });
+
+        axios.post(studentDataURL, confirmed_partner_trip[0]['student'], { headers: {"Authorization": `Token  ${id_token}`} })
+            .then((response) => {
+            const partner_data = response.data;
+            console.log(partner_data)
+            console.log('testing')
+            setPartner(partner_data)
+    
+        });
+      }, []);
+
     const columns = [
         {
             field: 'student',
@@ -62,8 +86,9 @@ function ConfirmedRequests(){
             width: 110,
             editable: false, 
         },  
+
     ]
-    
+
     let navigate = useNavigate();
     const deleteRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
     async function handleDelete() {
@@ -75,14 +100,14 @@ function ConfirmedRequests(){
         axios.delete(deleteRequestURL, { headers: {"Authorization": `Token ${id_token}`}, "data": {rideshare_data} }) // need to check if succeeded before redirecting
         console.log('submitted a delete request')
 
-        //redirect to home 
-        navigate(`../Home/${id_token}`, { replace: false });
+        navigate(`../Home/${id_token}`, { replace: true })
     };
-
+    console.log(user)
+    console.log(partner)
     return(
         <div>
-            { (confirmed_req_trips)
-                ? <div style={{ height: 400, width: '100%' }}>
+            { (confirmed_req_trips && user && partner)
+                ? <div style={{ height: 250, width: '100%' }}>
                     <DataGrid getRowId={row => row.trip_id}
                         rows={confirmed_req_trips} 
                         columns={columns}
@@ -90,7 +115,12 @@ function ConfirmedRequests(){
                         rowsPerPageOptions={[5]}
                         disableSelectionOnClick={true}
                     />
-                    <Button variant="contained" onClick={handleDelete}> delete </Button>
+                    <h2>Phone Numbers: {user['phone_number']},  {partner['phone_number']}</h2>
+                    <h2>Venmo: {user['venmo']},  {partner['venmo']}</h2>
+                    <h2>Cashapp: {user['venmo']},  {partner['venmo']}</h2>
+
+
+                    <Button variant="contained" onClick={handleDelete}> delete (refresh after deleting)</Button>
 
                 </div>
                 :<div></div>

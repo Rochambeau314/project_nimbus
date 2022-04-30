@@ -7,7 +7,7 @@ import logo from './nimbus_recolored.png';
 import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';
 
-function Trips(){
+function MyTrips(){
     // pull the access token from the URL 
     const {id_token} = useParams();
     //console.log(id_token);
@@ -64,15 +64,14 @@ function Trips(){
     };
 return(
     <div> 
-        <h1>My Trips </h1> 
+        <h1>My Trip </h1> 
         { (my_trip.length > 0)
-            ? <div style={{ height: 175, width: '100%' }}>
+            ? <div style={{ height: 175, width: '50%', margin: 'auto' }}>
                     <DataGrid getRowId={row => row.trip_id}
                         rows={my_trip}
                         columns={columns}
                         pageSize={5}
                         rowsPerPageOptions={[5]}
-                        checkboxSelection
                         disableSelectionOnClick={true}
                         onRowClick = {handleSubmit}/>
                 </div>
@@ -83,4 +82,4 @@ return(
 )
 }
 
-export default Trips 
+export default MyTrips 

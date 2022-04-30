@@ -19,7 +19,7 @@ function RideShare() {
 
     const row_data = [state, user_trip[0]]
     console.log(row_data)
-    
+
 
     const columns = [ 
         {

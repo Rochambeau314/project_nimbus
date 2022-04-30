@@ -62,8 +62,8 @@ function Trips(){
     } 
 return(
     <div> 
-        <h1>trips </h1> 
-        <div style={{ height: 400, width: '100%' }}>
+        <h1>All Trips </h1> 
+        <div style={{ height: 400, width: '50%', margin: 'auto' }}>
         <DataGrid getRowId={row => row.student}
             rows={other_trips} 
             columns={columns}

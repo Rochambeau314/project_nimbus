@@ -56,7 +56,7 @@ function PendingRequests() {
         <div>
             <h1> My Pending Requests </h1>
             { (pending_req)
-                ? <div style={{ height: 400, width: '100%' }}>
+                ? <div style={{ height: 400, width: '50%', margin: "auto"}}>
                     <DataGrid getRowId={row => row.trip_id}
                         rows={pending_req} 
                         columns={columns}

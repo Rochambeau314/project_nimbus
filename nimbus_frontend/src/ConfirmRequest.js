@@ -27,6 +27,7 @@ function ConfirmRequest() {
     // pull the rideshare request from the backend depending on user_trip and state (the trip that was clicked)
     const [specific, setSpecific] = useState();
 
+    
     const pullRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
     React.useEffect(() => {
         // pull the rideshare request data from the backend 
@@ -45,7 +46,6 @@ function ConfirmRequest() {
         
             }
          });
-        // assign the data to the "specific" state 
       }, []); 
     
     console.log('specific', specific)

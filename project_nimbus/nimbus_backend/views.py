@@ -127,8 +127,6 @@ def GoogleOAuth(request, format=None):
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
                 home_link = 'http://127.0.0.1:3000/Home/' + userobj.student.token
-                requests.get('http://127.0.0.1:8000/send_email/', data = {'email': user_email})
-
                 return redirect(home_link)
                 # sessions? 
                 # return so following code does not run 
@@ -165,20 +163,31 @@ def create_student(request, format=None):
     current_user.student.phone_number = student_data['phone_number'] 
     current_user.student.venmo = student_data['venmo']
     current_user.student.cashapp = student_data['cashapp']
-
+    
     current_user.save()
+    
     print('sending welcome email')
+    requests.get('http://127.0.0.1:8000/send_email/', data = {'email': current_user.email})
 
     return Response(status=200)
 
 @csrf_exempt
-@api_view(['GET'])
+@api_view(['GET', "POST"])
 @permission_classes([IsAuthenticated])
 def student_data(request, format=None):
-    current_user = request.user
-    student = current_user.student
-    serializer = StudentSerializer(student) 
-    # print(student)
+    if request.method == 'GET': 
+        current_user = request.user
+        student = current_user.student
+        serializer = StudentSerializer(student) 
+        # print(student)
+    elif request.method == 'POST': 
+        name_dict = request.data.keys()
+        name = [str(key) for key in name_dict]
+        print(name)        
+
+        user = User.objects.get(username = name[0])
+        serializer = StudentSerializer(user.student)
+
     return Response(serializer.data, status=200)
 
 @csrf_exempt
@@ -483,7 +492,7 @@ def send_email(request, format=None):
         print(receiver_email)
 
         params['subject'] = 'Project Nimbus: You Have a New Request!'
-        params['msg_html'] = 'You have received a rideshare request! '
+        params['msg_html'] = 'You have received a rideshare request!'
         params['to'] = receiver_email
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
