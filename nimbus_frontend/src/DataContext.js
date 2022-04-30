@@ -1,5 +1,5 @@
 import React, {useContext, useState} from "react";
-import {useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams, useLocation} from "react-router-dom";
 import axios from "axios";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
@@ -36,6 +36,8 @@ export function DataProvider({children}) {
 
     // pull confirmed request
     const confirmedrequestsURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
+
+    const { pathname: pathNow } = useLocation();
 
     const [data, setData] = useState({
         'user': {},
@@ -85,7 +87,7 @@ export function DataProvider({children}) {
             setData(data)
         }
         fetchData();
-    }, [token]); 
+    }, [token, pathNow]); 
 
     return (
         <DataContext.Provider value = {data}>

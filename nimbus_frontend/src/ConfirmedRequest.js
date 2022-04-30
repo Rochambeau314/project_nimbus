@@ -63,6 +63,8 @@ function ConfirmedRequests(){
             editable: false, 
         },  
     ]
+    
+    let navigate = useNavigate();
     const deleteRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
     async function handleDelete() {
         const rideshare_data = {
@@ -73,8 +75,8 @@ function ConfirmedRequests(){
         axios.delete(deleteRequestURL, { headers: {"Authorization": `Token ${id_token}`}, "data": {rideshare_data} }) // need to check if succeeded before redirecting
         console.log('submitted a delete request')
 
-        // redirect to home 
-        //navigate(`../Home/${id_token}`, { replace: false });
+        //redirect to home 
+        navigate(`../Home/${id_token}`, { replace: false });
     };
 
     return(

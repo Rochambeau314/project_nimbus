@@ -91,13 +91,13 @@ function ConfirmRequest() {
             console.log('user created the request; redirect to home')
         }
         else{
-            //axios.post(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+            axios.post(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
             axios.put(messageURL, compare_data, { headers: {"Authorization": `Token ${id_token}`} }) // send email to the partner notifying them that they have a new rr_request 
             console.log('request confirmed!')
 
 
         }
-        //navigate(`../Home/${id_token}`, { replace: false });
+        navigate(`../Home/${id_token}`, { replace: false });
     };
 
     const deleteRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;

@@ -467,7 +467,7 @@ def send_email(request, format=None):
         print(receiver_email)
 
         params['subject'] = 'welcome to Project Nimbus!'
-        params['msg_plain'] = 'Thank you for joining Project Nimbus Project Nimbus aims to enable all Vanderbilt Students to safely, successfully, and efficiently arrange rideshare carpooling to and from the airport. The project is currently in beta.'
+        params['msg_html'] = "Thank you for joining Project Nimbus! Project Nimbus aims to enable all Vanderbilt Students to safely, successfully, and efficiently arrange rideshare carpooling to and from the airport. <br /> The project is currently in beta, so please disregard any design choices that have been made and react out to jason.l.tan@vanderbilt.edu if you experience any bugs. Thank you very much!  ."
         params['to'] = receiver_email
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
@@ -483,7 +483,7 @@ def send_email(request, format=None):
         print(receiver_email)
 
         params['subject'] = 'Project Nimbus: You Have a New Request!'
-        params['msg_plain'] = 'You have received a rideshare request!'
+        params['msg_html'] = 'You have received a rideshare request! '
         params['to'] = receiver_email
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
@@ -504,8 +504,8 @@ def send_email(request, format=None):
         print(user_email, partner_email)
 
 
-        params['subject'] = 'Project Nimbus: You Have a New Request!'
-        params['msg_plain'] = 'You have received a rideshare request!'
+        params['subject'] = 'Project Nimbus: Carpool Confirmed!'
+        params['msg_html'] = 'Your Carpool Request has been Confirmed!!'
         params['to'] = user_email
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
 
@@ -527,7 +527,7 @@ def send_email(request, format=None):
 
         params['to'] = partner_email
         params['subject'] = 'Project Nimbus: Request Cancelled'
-        params['msg_plain'] = 'Your rideshare request has been cancelled. Submit another request here.'
+        params['msg_html'] = 'Your rideshare request has been cancelled. Submit another request here.'
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
 
