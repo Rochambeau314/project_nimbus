@@ -19,7 +19,6 @@ from django.views.decorators.csrf import csrf_exempt
 from simplegmail import Gmail
 
 # mike perez 
-# {"token": "ya29.A0ARrdaM_ta_vv4ZpA6mTNA9eYUvEjoLChdxd0LkTImsOTEkiDQ7JTzpqFMaZg5oJNfqcYJVynf8GFUgL70K3pmpvzCU0P88QrkDw1h4Ia5LXKap4RsrBFbECfJ-YoGeu_XKzpevnKZQ9I2VpuYOC7IDQjAf3I"}
 from project_nimbus.nimbus_backend.secrets import client_secret
 
 # warning/user agreement that 
