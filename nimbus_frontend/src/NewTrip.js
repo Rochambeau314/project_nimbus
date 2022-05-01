@@ -135,9 +135,10 @@ function NewTrip() {
                 onChange={handleDatetimeChange}
                 renderInput={(params) => <TextField {...params} />}
                 />
-            </LocalizationProvider>    
+            </LocalizationProvider>
+            <div> </div>                
             <TextField id="outlined-number" label="Luggage" variant="outlined" type = "number" value = {luggage} onChange={handleLuggageChange} required />
-            
+            <div></div> 
             <Button variant="contained" onClick={handleSubmit}> Submit </Button>
             <div> {message} </div> 
         </div>

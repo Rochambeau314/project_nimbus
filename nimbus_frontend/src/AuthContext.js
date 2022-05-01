@@ -10,7 +10,7 @@ import { DataGrid } from '@mui/x-data-grid';
 
 const AuthContext = React.createContext({
     token: '',
-    setToken: () => {}, 
+    setToken: () => {},  
 }) ;
 
 export function useToken() {

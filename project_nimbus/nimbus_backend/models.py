@@ -57,7 +57,6 @@ class Student(models.Model):
         instance.student.save()
 
 class Trip(models.Model):
-
     trip_id = models.AutoField(primary_key=True)
 
     student = models.TextField(default = "")
@@ -81,4 +80,21 @@ class Trip(models.Model):
 
     pickup_time = models.DateTimeField(default=datetime.now())
     number_of_bags = models.TextField(default = "")
+    confirmed = models.BooleanField(default = False)
+
+class RideshareRequest(models.Model):
+
+    # user who requested the ridshare 
+    user_user = models.TextField('') # needed to filter for GET  
+
+    # trip data of the matched person 
+    partner_user = models.TextField('') # needed to filter for GET 
+    
+    user_trip = models.ManyToManyField(Trip, related_name = 'u_trip')
+
+    partner_trip = models.ManyToManyField(Trip, related_name = 'p_trip')
+
+    # if the rideshare was confirmed or not 
+    confirmed = models.BooleanField()
+
 
