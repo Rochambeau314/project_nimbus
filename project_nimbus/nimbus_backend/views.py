@@ -103,25 +103,23 @@ def GoogleOAuth(request, format=None):
         print(user_data)
 
         # search users for a current match; already existing --> sign in, no match --> create an account 
-
-        users_response = requests.get('https://idlehands.pythonanywhere.com/users/') # grab entire list of users 
+        users = User.objects.all()
+        # users_response = requests.get('https://idlehands.pythonanywhere.com/users/') # grab entire list of users 
         print('grabbed users')
-        users = users_response.json() # convert to json 
+        # users = users_response.json() # convert to json 
         print('list of users', users)
         
         # search for match 
         for user in users: 
-            print(name, user['username'], name == user['username'])
-            print(user_email, user['email'], user_email == user['email'])
+            print(name, user.username, name == user.username)
+            print(user_email, user.email, user_email == user.email)
 
-            if user['username'] == name and user['email'] == user_email:
-                userobj = User.objects.get(username=name)
-                print(userobj)
-                print(userobj.student.token)
+            if user.username == name and user.email == user_email:
+                print(user.student.token)
                 print('match! sign them in!')
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
-                home_link = 'https://project-nimbus.vercel.app//Home/' + userobj.student.token
+                home_link = 'https://project-nimbus.vercel.app//Home/' + user.student.token
                 print('redirected to home_link')
                 return redirect(home_link)
 
