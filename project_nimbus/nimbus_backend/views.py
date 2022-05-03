@@ -121,6 +121,7 @@ def GoogleOAuth(request, format=None):
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
                 home_link = 'https://project-nimbus.vercel.app//Home/' + userobj.student.token
+                print('redirected to home_link')
                 return redirect(home_link)
                 # sessions? 
                 # return so following code does not run 
@@ -142,6 +143,7 @@ def GoogleOAuth(request, format=None):
         # new_user.save()
     
         newuser_link = 'https://project-nimbus.vercel.app/NewUser/' + token.key
+        print('redirected to newuser_link')
         return redirect(newuser_link)
 
 
