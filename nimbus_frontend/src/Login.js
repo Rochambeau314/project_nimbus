@@ -28,6 +28,7 @@ function Login() {
           redirect_uri: `${'https://idlehands.pythonanywhere.com'}/${redirectUri}`,
           prompt: 'select_account',
           access_type: 'offline',
+          scope
         };
       
         const urlParams = new URLSearchParams(params).toString();
