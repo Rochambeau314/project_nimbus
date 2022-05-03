@@ -168,7 +168,7 @@ def create_student(request, format=None):
     }
 
     # account created; welcome to project nimbus
-    receiver_email = request.data['email']
+    receiver_email = current_user.email
     #print(receiver_email)
 
     params['subject'] = 'welcome to Project Nimbus!'
@@ -176,7 +176,7 @@ def create_student(request, format=None):
     params['to'] = receiver_email
 
     email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-    
+
     return Response(status=200)
 
 @csrf_exempt
@@ -447,6 +447,36 @@ def confirmed_request(request, format = None):
             print({'user_trip': TripSerializer(trip_one).data, 'partner_trip': TripSerializer(trip_two).data})
             email_data = {'partner_trip': TripSerializer(trip_two).data}
             #requests.put('https://idlehands.pythonanywhere.com/send_email/', data = {'user': user, 'partner': partner})
+
+            target_user = User.objects.get(username = request.data['user'])
+            target_partner = User.objects.get(username = request.data['partner'])
+            #print(target_user, target_partner)  
+
+            user_email = target_user.email
+            partner_email = target_partner.email
+            #print(user_email, partner_email)
+            
+            params = {
+                "to": '',
+                "sender": "idlehandsvanderbilt@gmail.com",
+                "subject": '',
+                "msg_html": "",
+                "msg_plain": '',
+                "signature": True  # use my account signature
+            }
+
+            params['subject'] = 'Project Nimbus: Carpool Confirmed!'
+            params['msg_html'] = 'Your Carpool Request has been Confirmed!!'
+            params['to'] = user_email
+
+            gmail = Gmail() # will open a browser window to ask you to log in and authenticate
+
+            email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+
+            params['to'] = partner_email
+            email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+
+
             return Response(status=200)
         else:
             return Response(status=302)
