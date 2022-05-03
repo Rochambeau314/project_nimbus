@@ -156,7 +156,7 @@ def create_student(request, format=None):
     current_user.save()
     
     #print('sending welcome email')
-    requests.get('https://idlehands.pythonanywhere.com/send_email/', data = {'email': current_user.email})
+    # requests.get('https://idlehands.pythonanywhere.com/send_email/', data = {'email': current_user.email})
 
     return Response(status=200)
 
