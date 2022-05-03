@@ -85,7 +85,7 @@ function NewUser() {
             .then((response) => {
                 //console.log(response)
                 const response_data = response.data;
-                //console.log(response_data)
+                console.log(response_data)
                 navigate(`../home/${id_token}`, { replace: true });
 
         });
