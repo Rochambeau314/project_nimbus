@@ -156,7 +156,7 @@ def create_student(request, format=None):
     current_user.save()
     
     #print('sending welcome email')
-    # requests.get('https://idlehands.pythonanywhere.com/send_email/', data = {'email': current_user.email})
+    requests.get('https://idlehands.pythonanywhere.com/send_email/', data = {'email': current_user.email})
 
     return Response(status=200)
 
@@ -427,7 +427,7 @@ def confirmed_request(request, format = None):
             # send email 
             print({'user_trip': TripSerializer(trip_one).data, 'partner_trip': TripSerializer(trip_two).data})
             email_data = {'partner_trip': TripSerializer(trip_two).data}
-            requests.put('https://idlehands.pythonanywhere.com/send_email/', data = {'user': user, 'partner': partner})
+            #requests.put('https://idlehands.pythonanywhere.com/send_email/', data = {'user': user, 'partner': partner})
             return Response(status=200)
         else:
             return Response(status=302)
@@ -489,6 +489,8 @@ def send_email(request, format=None):
         params['to'] = receiver_email
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+
+        return(Response(status=200))
 
 
     # received a request
