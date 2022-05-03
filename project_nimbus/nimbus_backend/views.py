@@ -156,8 +156,27 @@ def create_student(request, format=None):
     current_user.save()
     
     #print('sending welcome email')
-    requests.get('https://idlehands.pythonanywhere.com/send_email/', data = {'email': current_user.email})
+    # requests.get('https://idlehands.pythonanywhere.com/send_email/', data = {'email': current_user.email})
+    gmail = Gmail()
+    params = {
+        "to": '',
+        "sender": "idlehandsvanderbilt@gmail.com",
+        "subject": '',
+        "msg_html": "",
+        "msg_plain": '',
+        "signature": True  # use my account signature
+    }
 
+    # account created; welcome to project nimbus
+    receiver_email = request.data['email']
+    #print(receiver_email)
+
+    params['subject'] = 'welcome to Project Nimbus!'
+    params['msg_html'] = "Thank you for joining Project Nimbus! Project Nimbus aims to enable all Vanderbilt Students to safely, successfully, and efficiently arrange rideshare carpooling to and from the airport. <br /> The project is currently in beta, so please disregard any design choices that have been made and react out to jason.l.tan@vanderbilt.edu if you experience any bugs. Thank you very much!  ."
+    params['to'] = receiver_email
+
+    email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+    
     return Response(status=200)
 
 @csrf_exempt
@@ -490,9 +509,6 @@ def send_email(request, format=None):
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
 
-        return(Response(status=200))
-
-
     # received a request
     elif request.method == 'POST': 
         target_student = request.data['student']
@@ -533,7 +549,6 @@ def send_email(request, format=None):
 
         params['to'] = partner_email
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-        return(Response(status=200))
     
     # the request has been deleted (only sent to the person who didn't delete the request)
     elif request.method == 'DELETE': 
