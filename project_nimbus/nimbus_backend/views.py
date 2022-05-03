@@ -399,7 +399,7 @@ def confirmed_request(request, format = None):
     elif request.method == "POST": 
         # confirm the rideshare request: 
         rr_data = request.data
-        #print('rr_data', rr_data)
+        print('post_data', rr_data)
 
         user = rr_data[0]['student']
         user_trip = Trip.objects.get(student=user)
@@ -445,11 +445,11 @@ def confirmed_request(request, format = None):
 
             # send email 
             print({'user_trip': TripSerializer(trip_one).data, 'partner_trip': TripSerializer(trip_two).data})
-            email_data = {'partner_trip': TripSerializer(trip_two).data}
+            # email_data = {'partner_trip': TripSerializer(trip_two).data}
             #requests.put('https://idlehands.pythonanywhere.com/send_email/', data = {'user': user, 'partner': partner})
 
-            target_user = User.objects.get(username = request.data['user'])
-            target_partner = User.objects.get(username = request.data['partner'])
+            target_user = User.objects.get(username = user)
+            target_partner = User.objects.get(username = partner)
             #print(target_user, target_partner)  
 
             user_email = target_user.email
