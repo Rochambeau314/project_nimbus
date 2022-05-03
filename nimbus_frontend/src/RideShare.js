@@ -53,8 +53,8 @@ function RideShare() {
 
         // send rideshare request data to backend, redirect to scheduled rideshares 
         let navigate = useNavigate();
-        const rideshareRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
-        const messageURL = `${'http://127.0.0.1:8000'}/send_email/`
+        const rideshareRequestURL = `${'https://idlehands.pythonanywhere.com'}/rideshare_request`;
+        const messageURL = `${'https://idlehands.pythonanywhere.com'}/send_email/`
         async function handleClick(event) {
             const rideshare_data = {
                 user_trip: user_trip,

@@ -28,7 +28,7 @@ function ConfirmRequest() {
     const [specific, setSpecific] = useState();
 
     
-    const pullRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+    const pullRequestURL = `${'https://idlehands.pythonanywhere.com'}/rideshare_request`;
     React.useEffect(() => {
         // pull the rideshare request data from the backend 
         const useEff_data = axios.put(pullRequestURL, compare_data, { headers: {"Authorization": `Token ${id_token}`} })
@@ -82,10 +82,10 @@ function ConfirmRequest() {
 
     // send rideshare request data to backend, redirect to scheduled rideshares 
     let navigate = useNavigate();
-    const messageURL = `${'http://127.0.0.1:8000'}/send_email/`
+    const messageURL = `${'https://idlehands.pythonanywhere.com'}/send_email/`
 
     const [message, setMessage] = useState("")
-    const confirmRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
+    const confirmRequestURL = `${'https://idlehands.pythonanywhere.com'}/confirmed_request`;
     async function handleConfirm() {
 
         if (Object.is(user_trip[0]['student'], specific['user_trip'][0]['student'])) {
@@ -99,7 +99,7 @@ function ConfirmRequest() {
         navigate(`../Home/${id_token}`, { replace: false });
     };
 
-    const deleteRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+    const deleteRequestURL = `${'https://idlehands.pythonanywhere.com'}/rideshare_request`;
     async function handleDelete() {
         const rideshare_data = {
             user_trip: user_trip,

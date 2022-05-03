@@ -25,10 +25,9 @@ function Login() {
         const params = {
           response_type: 'code',
           client_id: '1004886906155-d7b2r83i0u8d7ks1bvv1b6rgrdp673gk.apps.googleusercontent.com',
-          redirect_uri: `${'http://127.0.0.1:8000'}/${redirectUri}`,
+          redirect_uri: `${'https://idlehands.pythonanywhere.com'}/${redirectUri}`,
           prompt: 'select_account',
           access_type: 'offline',
-          scope 
         };
       
         const urlParams = new URLSearchParams(params).toString();

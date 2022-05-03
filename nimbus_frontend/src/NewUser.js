@@ -14,7 +14,7 @@ function NewUser() {
     const {id_token} = useParams();
 
     // request student data 
-    const baseURL = `${'http://127.0.0.1:8000'}/user_data`;
+    const baseURL = `${'https://idlehands.pythonanywhere.com'}/user_data`;
 
     React.useEffect(() => {
         axios.get(baseURL, { headers: {"Authorization": `Token  ${id_token}`} })
@@ -80,7 +80,7 @@ function NewUser() {
         //console.log(student_data)
 
         // send student_data to the backend 
-        const create_student_baseURL = `${'http://127.0.0.1:8000'}/create_student`;
+        const create_student_baseURL = `${'https://idlehands.pythonanywhere.com'}/create_student`;
         axios.post(create_student_baseURL, trip_data, { headers: {"Authorization": `Token  ${id_token}`}})
             .then((response) => {
                 //console.log(response)

@@ -51,8 +51,8 @@ function NewTrip() {
     const error_message = "only 1 trip at a time. sorry!"
 
     // request user/student data 
-    const userDataURL = `${'http://127.0.0.1:8000'}/user_data`;
-    const studentDataURL = `${'http://127.0.0.1:8000'}/student_data`;
+    const userDataURL = `${'https://idlehands.pythonanywhere.com'}/user_data`;
+    const studentDataURL = `${'https://idlehands.pythonanywhere.com'}/student_data`;
 
     React.useEffect(() => {
         axios.get(userDataURL, { headers: {"Authorization": `Token  ${id_token}`} })
@@ -83,7 +83,7 @@ function NewTrip() {
           //console.log(trip_data)
   
           // send student_data to the backend 
-          const create_trip_baseURL = `${'http://127.0.0.1:8000'}/create_trip`;
+          const create_trip_baseURL = `${'https://idlehands.pythonanywhere.com'}/create_trip`;
           axios.post(create_trip_baseURL, trip_data, { headers: {"Authorization": `Token  ${id_token}`}})
             .then((response) => {
                 //console.log(response)

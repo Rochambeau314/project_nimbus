@@ -35,7 +35,7 @@ function ConfirmedRequests(){
     }
 
     // grab data of both parties after confirmed 
-    const studentDataURL = `${'http://127.0.0.1:8000'}/student_data`;
+    const studentDataURL = `${'https://idlehands.pythonanywhere.com'}/student_data`;
     const [user, setUser] = useState();
     const [partner, setPartner] = useState();
     React.useEffect(() => {
@@ -90,7 +90,7 @@ function ConfirmedRequests(){
     ]
 
     let navigate = useNavigate();
-    const deleteRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
+    const deleteRequestURL = `${'https://idlehands.pythonanywhere.com'}/confirmed_request`;
     async function handleDelete() {
         const rideshare_data = {
             user_trip: confirmed_user_trip,
@@ -117,7 +117,7 @@ function ConfirmedRequests(){
                     />
                     <h2>Phone Numbers: {user['phone_number']},  {partner['phone_number']}</h2>
                     <h2>Venmo: {user['venmo']}, {partner['venmo']}</h2>
-                    <h2>Cashapp: {user['venmo']}, {partner['venmo']}</h2>
+                    <h2>Cashapp: {user['cashapp']}, {partner['cashapp']}</h2>
 
 
                     <Button variant="contained" onClick={handleDelete}> delete (refresh after deleting)</Button>

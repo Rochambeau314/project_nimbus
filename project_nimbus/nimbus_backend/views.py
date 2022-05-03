@@ -74,17 +74,16 @@ def GoogleOAuth(request, format=None):
         'code': gCode,
         'client_id':'1004886906155-d7b2r83i0u8d7ks1bvv1b6rgrdp673gk.apps.googleusercontent.com',
         'client_secret': client_secret,
-        'redirect_uri': 'http://127.0.0.1:8000/GoogleOAuth',
+        'redirect_uri': 'https://idlehands.pythonanywhere.com/GoogleOAuth',
         'grant_type': 'authorization_code'
         }
         
         # ask Google for access token 
         response = requests.post('https://oauth2.googleapis.com/token', data=package)
         json_response = response.json()
-        # #print('json_response', json_response)
+        print('json_response', json_response)
 
         # isolate the access token from the header and rest of data 
-        access_token = json_response['access_token']
         # #print('access token', access_token)
 
         # isolate the id token from the header and rest of data 
@@ -105,7 +104,7 @@ def GoogleOAuth(request, format=None):
 
         # search users for a current match; already existing --> sign in, no match --> create an account 
 
-        users_response = requests.get('http://127.0.0.1:8000/users/') # grab entire list of users 
+        users_response = requests.get('https://idlehands.pythonanywhere.com/users/') # grab entire list of users 
         users = users_response.json() # convert to json 
         # #print('list of users', users)
         
@@ -121,7 +120,7 @@ def GoogleOAuth(request, format=None):
                 # #print('match! sign them in!
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
-                home_link = 'http://127.0.0.1:3000/Home/' + userobj.student.token
+                home_link = 'https://project-nimbus.vercel.app//Home/' + userobj.student.token
                 return redirect(home_link)
                 # sessions? 
                 # return so following code does not run 
@@ -142,7 +141,7 @@ def GoogleOAuth(request, format=None):
         # new_user.student.access_token = access_token # currently a normal access token; will probably need to be replaced by a refresh token as AT will expire 
         # new_user.save()
     
-        newuser_link = 'http://127.0.0.1:3000/NewUser/' + token.key
+        newuser_link = 'https://project-nimbus.vercel.app/NewUser/' + token.key
         return redirect(newuser_link)
 
 
@@ -161,7 +160,7 @@ def create_student(request, format=None):
     current_user.save()
     
     #print('sending welcome email')
-    requests.get('http://127.0.0.1:8000/send_email/', data = {'email': current_user.email})
+    requests.get('https://idlehands.pythonanywhere.com/send_email/', data = {'email': current_user.email})
 
     return Response(status=200)
 
@@ -432,7 +431,7 @@ def confirmed_request(request, format = None):
             # send email 
             print({'user_trip': TripSerializer(trip_one).data, 'partner_trip': TripSerializer(trip_two).data})
             email_data = {'partner_trip': TripSerializer(trip_two).data}
-            requests.put('http://127.0.0.1:8000/send_email/', data = {'user': user, 'partner': partner})
+            requests.put('https://idlehands.pythonanywhere.com/send_email/', data = {'user': user, 'partner': partner})
             return Response(status=200)
         else:
             return Response(status=302)

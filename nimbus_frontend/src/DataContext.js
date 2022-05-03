@@ -20,22 +20,22 @@ export function DataProvider({children}) {
     //console.log('id_token in datacontext', token)
     
     // pull all current trips from backend 
-    const tripURL = `${'http://127.0.0.1:8000'}/my_trips`; 
+    const tripURL = `${'https://idlehands.pythonanywhere.com'}/my_trips`; 
         
     //
-    const newtripURL = `${'http://127.0.0.1:8000'}/create_trip`;
+    const newtripURL = `${'https://idlehands.pythonanywhere.com'}/create_trip`;
  
     // pull current student data
-    const studentURL = `${'http://127.0.0.1:8000'}/student_data`;
+    const studentURL = `${'https://idlehands.pythonanywhere.com'}/student_data`;
  
     // pull user data from backend 
-    const userURL = `${'http://127.0.0.1:8000'}/user_data`;
+    const userURL = `${'https://idlehands.pythonanywhere.com'}/user_data`;
 
     // pull pending requests from backend 
-    const pendingrequestsURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
+    const pendingrequestsURL = `${'https://idlehands.pythonanywhere.com'}/rideshare_request`;
 
     // pull confirmed request
-    const confirmedrequestsURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
+    const confirmedrequestsURL = `${'https://idlehands.pythonanywhere.com'}/confirmed_request`;
 
     const { pathname: pathNow } = useLocation();
 
