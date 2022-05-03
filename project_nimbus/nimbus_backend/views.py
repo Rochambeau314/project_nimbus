@@ -100,7 +100,7 @@ def GoogleOAuth(request, format=None):
         name = decoded_id_token['name'].replace(" ", "")
         user_email = decoded_id_token['email'] 
         user_data = name, user_email
-        # #print(user_data)
+        print(user_data)
 
         # search users for a current match; already existing --> sign in, no match --> create an account 
 
