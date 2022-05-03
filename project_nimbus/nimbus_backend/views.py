@@ -118,7 +118,7 @@ def GoogleOAuth(request, format=None):
                 userobj = User.objects.get(username=name)
                 print(userobj)
                 print(userobj.student.token)
-                print('match! sign them in!)
+                print('match! sign them in!')
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
                 home_link = 'https://project-nimbus.vercel.app//Home/' + userobj.student.token
