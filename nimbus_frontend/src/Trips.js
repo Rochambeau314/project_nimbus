@@ -13,13 +13,13 @@ function Trips(){
     const context_data = useData(); 
     const [data, setData] = useState([]) 
     React.useEffect(() => {
-        console.log('trips useEffect has updated the data')
+        //console.log('trips useEffect has updated the data')
         setData(context_data);  
     }); 
       
-    console.log('data in trips', data)  
+    //console.log('data in trips', data)  
     const other_trips = data['other_trips']
-    console.log('other_trips', data['other_trips']) 
+    //console.log('other_trips', data['other_trips']) 
 
     const user_trip = data['user_trips']  
 
@@ -57,13 +57,13 @@ function Trips(){
     // redirects to specific trip when a trip is clicked 
     let navigate = useNavigate();
     async function handleTripClick(data){ 
-        console.log('clicked!', data)
+        //console.log('clicked!', data)
         navigate(`../RideShare/${data['student']}/${token}`, {state: data});
     } 
 return(
     <div> 
         <h1>All Trips </h1> 
-        <div style={{ height: 400, width: '50%', margin: 'auto' }}>
+        <div style={{ height: 400, width: '70%', margin: 'auto' }}>
         <DataGrid getRowId={row => row.student}
             rows={other_trips} 
             columns={columns}

@@ -14,7 +14,7 @@ function Home(){
 
     // pull the access token from the URL 
     const {id_token} = useParams();
-    console.log('id_token', id_token);
+    //console.log('id_token', id_token);
 
     const {token, setToken} = useToken();   
 
@@ -22,11 +22,11 @@ function Home(){
         setToken(id_token); 
       }, [token]); 
 
-    console.log('data in home', useData())
+    //console.log('data in home', useData())
     const name = useData()['user']['name']
     
     const my_trip_confirmed = useData()['confirmed_request']
-    console.log('confirmed_request', my_trip_confirmed)
+    //console.log('confirmed_request', my_trip_confirmed)
 
     const confirmed = useData()['confirmed_request']['confirmed']
 

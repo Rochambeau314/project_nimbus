@@ -12,7 +12,7 @@ function PendingRequests() {
     const {id_token} = useParams();
 
     const pending_req = useData()['pending_requests']
-    console.log('pending_requests', pending_req)
+    //console.log('pending_requests', pending_req)
 
     const columns = [ 
         {
@@ -44,19 +44,18 @@ function PendingRequests() {
         },  
     ]
 
-        // send rideshare request data to backend, redirect to scheduled rideshares 
         let navigate = useNavigate();
         async function handleClick(data) {
-            console.log('PendingRequests --> ConfirmRequest',data)
-            console.log('redirected to comparison page! ')
+            //console.log('PendingRequests --> ConfirmRequest',data)
+            //console.log('redirected to comparison page! ')
             navigate(`../ConfirmRequest/${data['student']}/${id_token}`, {state: data});
         };
 
     return(
         <div>
             <h1> My Pending Requests </h1>
-            { (pending_req)
-                ? <div style={{ height: 400, width: '50%', margin: "auto"}}>
+            { (pending_req != '{}')
+                ? <div style={{ height: 400, width: '70%', margin: "auto"}}>
                     <DataGrid getRowId={row => row.trip_id}
                         rows={pending_req} 
                         columns={columns}

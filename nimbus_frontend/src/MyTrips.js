@@ -66,7 +66,7 @@ return(
     <div> 
         <h1>My Trip </h1> 
         { (my_trip.length > 0)
-            ? <div style={{ height: 175, width: '50%', margin: 'auto' }}>
+            ? <div style={{ height: 175, width: '70%', margin: 'auto' }}>
                     <DataGrid getRowId={row => row.trip_id}
                         rows={my_trip}
                         columns={columns}

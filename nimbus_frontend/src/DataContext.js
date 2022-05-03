@@ -17,7 +17,7 @@ export function useData(){
 export function DataProvider({children}) {  
 
     const {token} = useToken()       
-    console.log('id_token in datacontext', token)
+    //console.log('id_token in datacontext', token)
     
     // pull all current trips from backend 
     const tripURL = `${'http://127.0.0.1:8000'}/my_trips`; 
@@ -51,6 +51,7 @@ export function DataProvider({children}) {
     //console.log('data before useEffect', data)
     React.useEffect(() => {
         const fetchData = async () => {  
+
             const data = {
                 'user': {},
                 'student': {},    
@@ -59,34 +60,39 @@ export function DataProvider({children}) {
                 'pending_requests': [],
                 'confirmed_request': {}
             }
-            const user = await axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
-            console.log('user', user.data)
-            data['user'] = user.data
+            if(token){
+                const user = await axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
+                //console.log('user', user.data)
+                data['user'] = user.data
 
-            const student = await axios.get(studentURL, { headers: {"Authorization": `Token ${token}`} })
-            console.log('student', student.data)
-            data['student'] = student.data
+                const student = await axios.get(studentURL, { headers: {"Authorization": `Token ${token}`} })
+                //console.log('student', student.data)
+                data['student'] = student.data
 
-            const user_trips = await axios.get(tripURL, { headers: {"Authorization": `Token ${token}`} })
-            console.log('user_trips', user_trips.data)
-            data['user_trips'] = user_trips.data
+                const user_trips = await axios.get(tripURL, { headers: {"Authorization": `Token ${token}`} })
+                //console.log('user_trips', user_trips.data)
+                data['user_trips'] = user_trips.data
 
-            const other_trips = await axios.get(newtripURL, { headers: {"Authorization": `Token ${token}`} })
-            console.log('other_trips', other_trips.data)
-            data['other_trips'] = other_trips.data
+                const other_trips = await axios.get(newtripURL, { headers: {"Authorization": `Token ${token}`} })
+                //console.log('other_trips', other_trips.data)
+                data['other_trips'] = other_trips.data
 
-            const pending_requests = await axios.get(pendingrequestsURL, {headers: {"Authorization": `Token ${token}`} })
-            const pending_requests_data = pending_requests.data
-            console.log('pending_requests_context', pending_requests_data) 
-            data['pending_requests'] = pending_requests.data  
+                const pending_requests = await axios.get(pendingrequestsURL, {headers: {"Authorization": `Token ${token}`} })
+                const pending_requests_data = pending_requests.data
+                //console.log('pending_requests_context', pending_requests_data) 
+                data['pending_requests'] = pending_requests.data  
 
-            const confirmed_request = await axios.get(confirmedrequestsURL, {headers: {"Authorization": `Token ${token}`} })
-            const confirmed_request_data = confirmed_request.data
-            console.log('confirmed_requests_context', confirmed_request_data) 
-            data['confirmed_request'] = confirmed_request.data  
-            setData(data)
+                const confirmed_request = await axios.get(confirmedrequestsURL, {headers: {"Authorization": `Token ${token}`} })
+                const confirmed_request_data = confirmed_request.data
+                //console.log('confirmed_requests_context', confirmed_request_data) 
+                data['confirmed_request'] = confirmed_request.data  
+
+                setData(data)
+            }
         }
+            
         fetchData();
+        
     }, [token, pathNow]); 
 
     return (

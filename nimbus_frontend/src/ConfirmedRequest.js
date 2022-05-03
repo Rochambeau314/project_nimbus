@@ -19,19 +19,19 @@ function ConfirmedRequests(){
     //console.log(confirmed_request, 'confirmed_request')
 
     const confirmed_user_trip = confirmed_request['user_trip']
-    console.log('confirmed_user_trip', confirmed_user_trip)
+    //console.log('confirmed_user_trip', confirmed_user_trip)
 
     const confirmed_partner_trip = confirmed_request['partner_trip']
-    console.log('confirmed_partner_trip', confirmed_partner_trip)
+    //console.log('confirmed_partner_trip', confirmed_partner_trip)
 
     let confirmed_req_trips = {}
     if (typeof confirmed_partner_trip === 'undefined'){
-        console.log('confirmed_request === undefined')
+        //console.log('confirmed_request === undefined')
     }
     else {
-        console.log('confirmed_request != undefined')
+        //console.log('confirmed_request != undefined')
         confirmed_req_trips = confirmed_user_trip.concat(confirmed_partner_trip)
-        console.log('confirmed_req_trips', confirmed_req_trips)
+        //console.log('confirmed_req_trips', confirmed_req_trips)
     }
 
     // grab data of both parties after confirmed 
@@ -42,8 +42,8 @@ function ConfirmedRequests(){
         axios.post(studentDataURL, confirmed_user_trip[0]['student'], { headers: {"Authorization": `Token  ${id_token}`} })
             .then((response) => {
             const user_data = response.data;
-            console.log(user_data)
-            console.log('testing')
+            //console.log(user_data)
+            //console.log('testing')
             setUser(user_data)
 
         });
@@ -51,8 +51,8 @@ function ConfirmedRequests(){
         axios.post(studentDataURL, confirmed_partner_trip[0]['student'], { headers: {"Authorization": `Token  ${id_token}`} })
             .then((response) => {
             const partner_data = response.data;
-            console.log(partner_data)
-            console.log('testing')
+            //console.log(partner_data)
+            //console.log('testing')
             setPartner(partner_data)
     
         });
@@ -96,14 +96,14 @@ function ConfirmedRequests(){
             user_trip: confirmed_user_trip,
             partner_trip: confirmed_partner_trip, 
         }
-        console.log(rideshare_data)
+        //console.log(rideshare_data)
         axios.delete(deleteRequestURL, { headers: {"Authorization": `Token ${id_token}`}, "data": {rideshare_data} }) // need to check if succeeded before redirecting
-        console.log('submitted a delete request')
+        //console.log('submitted a delete request')
 
         navigate(`../Home/${id_token}`, { replace: true })
     };
-    console.log(user)
-    console.log(partner)
+    //console.log(user)
+    //console.log(partner)
     return(
         <div>
             { (confirmed_req_trips && user && partner)
@@ -116,8 +116,8 @@ function ConfirmedRequests(){
                         disableSelectionOnClick={true}
                     />
                     <h2>Phone Numbers: {user['phone_number']},  {partner['phone_number']}</h2>
-                    <h2>Venmo: {user['venmo']},  {partner['venmo']}</h2>
-                    <h2>Cashapp: {user['venmo']},  {partner['venmo']}</h2>
+                    <h2>Venmo: {user['venmo']}, {partner['venmo']}</h2>
+                    <h2>Cashapp: {user['venmo']}, {partner['venmo']}</h2>
 
 
                     <Button variant="contained" onClick={handleDelete}> delete (refresh after deleting)</Button>

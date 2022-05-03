@@ -20,8 +20,8 @@ function NewUser() {
         axios.get(baseURL, { headers: {"Authorization": `Token  ${id_token}`} })
             .then((response) => {
             const user_data = response.data;
-            console.log(user_data)
-            console.log('testing')
+            //console.log(user_data)
+            //console.log('testing')
         });
       }, []);
     
@@ -83,9 +83,9 @@ function NewUser() {
         const create_student_baseURL = `${'http://127.0.0.1:8000'}/create_student`;
         axios.post(create_student_baseURL, trip_data, { headers: {"Authorization": `Token  ${id_token}`}})
             .then((response) => {
-                console.log(response)
+                //console.log(response)
                 const response_data = response.data;
-                console.log(response_data)
+                //console.log(response_data)
                 navigate(`../home/${id_token}`, { replace: true });
 
         });
@@ -95,6 +95,7 @@ function NewUser() {
 
     return (
         <div>
+            <div> </div>
             <TextField 
                 id="outlined-select-dorm" 
                 select

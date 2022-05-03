@@ -12,13 +12,13 @@ function RideShare() {
     const {name, id_token} = useParams();  
 
     const {state} = useLocation(); 
-    console.log('state', [state])
+    //console.log('state', [state])
           
     const user_trip = useData()['user_trips']
     
 
     const row_data = [state, user_trip[0]]
-    console.log(row_data)
+    //console.log(row_data)
 
 
     const columns = [ 
@@ -60,10 +60,16 @@ function RideShare() {
                 user_trip: user_trip,
                 partner_trip: state, 
             }
-            console.log(rideshare_data)
+            //console.log(rideshare_data)
             axios.post(rideshareRequestURL, rideshare_data, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
-            axios.delete(messageURL, state, { headers: {"Authorization": `Token ${id_token}`} }) // send email to the partner notifying them that the request was deleted
-            navigate(`../Home/${id_token}`, { replace: false });
+            .then((response) => {
+                if (response.status === 302){
+                    navigate(`../Error/${id_token}`, { replace: false });
+                }
+                navigate(`../Home/${id_token}`, { replace: false });
+
+            })
+            
         };
 
     return(
@@ -76,7 +82,6 @@ function RideShare() {
                     rowsPerPageOptions={[5]}
                     disableSelectionOnClick={true}/>
             </div>
-            <div>{id_token}</div>
             <Button variant="contained" onClick={handleClick}> Send Request </Button>
         </div>)
 } 

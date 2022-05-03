@@ -58,8 +58,8 @@ function NewTrip() {
         axios.get(userDataURL, { headers: {"Authorization": `Token  ${id_token}`} })
             .then((response) => {
             const user_data = response.data;
-            console.log(user_data)
-            console.log('testing')
+            //console.log(user_data)
+            //console.log('testing')
             setUser(user_data.name)
 
         });
@@ -67,7 +67,7 @@ function NewTrip() {
         axios.get(studentDataURL, { headers: {"Authorization": `Token  ${id_token}`} })
             .then((response) => {
             const student_data = response.data;
-            console.log(student_data)
+            //console.log(student_data)
             setDorm(student_data.dorm)
             setGender(student_data.gender)
             setNumber(student_data.phone_number)
@@ -80,33 +80,33 @@ function NewTrip() {
       async function handleSubmit(event) {
           // grabs data from all forms and converts to JSON format 
           let trip_data = {student: user, dorm: dorm, pickup_time: datetime, number_of_bags: luggage}
-          console.log(trip_data)
+          //console.log(trip_data)
   
           // send student_data to the backend 
           const create_trip_baseURL = `${'http://127.0.0.1:8000'}/create_trip`;
           axios.post(create_trip_baseURL, trip_data, { headers: {"Authorization": `Token  ${id_token}`}})
             .then((response) => {
-                console.log(response)
+                //console.log(response)
                 const response_data = response.data;
-                console.log(response_data)
-                console.log(response.status)
+                //console.log(response_data)
+                //console.log(response.status)
                 navigate(`../home/${id_token}`, { replace: true });
             })
             .catch(function (error) {
                 // status code outside of 2xx
                 if (error.response) {
-                    console.log(error.response.status);
+                    //console.log(error.response.status);
                     handleErrorChange()
                     //navigate(`../home/${id_token}`, { replace: true });
                 
                 // The request was made but no response was received
                 } else if (error.request) {
-                    console.log(error.request);
+                    //console.log(error.request);
                     navigate(`../error/${id_token}`, { replace: true });
                 
                 // Something happened in setting up the request that triggered an Error
                 } else {
-                    console.log('Error', error.message);
+                    //console.log('Error', error.message);
                     navigate(`../error/${id_token}`, { replace: true });
 
                 }
