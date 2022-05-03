@@ -54,7 +54,7 @@ function ConfirmRequest() {
         {
             field: 'student',
             headerName: 'name',
-            width: 150,
+            width: 150,   
             editable: false,
         },
         {
