@@ -490,7 +490,7 @@ def send_email(request, format=None):
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
 
-        return 'get'
+        return(Response(status=200))
 
 
     # received a request
@@ -507,8 +507,7 @@ def send_email(request, format=None):
         params['to'] = receiver_email
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-
-        return 'post'
+        return(Response(status=200))
 
     # the request has been confirmed 
     elif request.method =='PUT': 
@@ -527,7 +526,6 @@ def send_email(request, format=None):
         #print(user_email, partner_email)
 
 
-
         params['subject'] = 'Project Nimbus: Carpool Confirmed!'
         params['msg_html'] = 'Your Carpool Request has been Confirmed!!'
         params['to'] = user_email
@@ -535,8 +533,7 @@ def send_email(request, format=None):
 
         params['to'] = partner_email
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-
-        return 'put'
+        return(Response(status=200))
     
     # the request has been deleted (only sent to the person who didn't delete the request)
     elif request.method == 'DELETE': 
@@ -556,6 +553,4 @@ def send_email(request, format=None):
         params['msg_html'] = 'Your rideshare request has been cancelled. Submit another request here.'
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-        return 'del'
-
-    return Response(status=200)
+        return(Response(status=200))
