@@ -130,7 +130,7 @@ function NewTrip() {
             <div>Cashapp: {cashapp}</div>
             <LocalizationProvider dateAdapter={DateAdapter}>
             <DateTimePicker
-                label="Arrival Time"
+                label="When do you plan to leave campus?"
                 value={datetime}
                 onChange={handleDatetimeChange}
                 renderInput={(params) => <TextField {...params} />}
