@@ -6,7 +6,6 @@ import MenuItem from '@mui/material/MenuItem';
 import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
-import NimbusHeader from './NimbusHeader';
 
 // grab user data from backend that just signed in 
 function NewUser() {
@@ -89,12 +88,13 @@ function NewUser() {
                 console.log(response_data)
                 navigate(`../home/${id_token}`, { replace: true });
 
-        });        
+        });
+        // redirect to home 
+        
     }
 
     return (
         <div>
-<<<<<<< Updated upstream
             <TextField 
                 id="outlined-select-dorm" 
                 select
@@ -159,93 +159,6 @@ function NewUser() {
                 Submit
             </Button>
 
-=======
-            <NimbusHeader/>
-            <div>
-                <TextField 
-                    id="outlined-select-dorm" 
-                    select
-                    label="Dorm" 
-                    variant="outlined" 
-                    required  
-                    value = {dorm} onChange={handleDormChange}
-                    helperText = "Select Your Pickup/Dropoff Point" 
-                    style = {{width: 250}}
-                    margin='normal'
-                >
-                    {DORM_LOCATIONS.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                    </MenuItem>
-                    ))}
-                </TextField>
-            </div>
-            <div>
-                <TextField 
-                    id="outlined-select-gender" 
-                    select
-                    label="Gender" 
-                    variant="outlined" 
-                    required  
-                    value = {gender} onChange={handleGenderChange}
-                    helperText = "Select Your Gender Identity. Learn More"
-                    style = {{width: 250}}
-                    margin='normal'
-                >
-                    {GENDER.map((option) => (
-                    <MenuItem key={option.value} value={option.value}>
-                    {option.label}
-                    </MenuItem>
-                    ))}
-                </TextField>
-            </div>
-            <div>
-                <TextField 
-                    id="outlined-basic" 
-                    type = "number" 
-                    label="Phone Number" 
-                    variant="outlined" 
-                    value = {number} 
-                    onChange={handleNumberChange} 
-                    required
-                    helperText= 'Where can we contact you?'
-                    margin='normal'
-                    style = {{width: 250}}/>
-            </div>
-            <div>
-                <TextField 
-                    id="outlined-basic" 
-                    label="Venmo" 
-                    variant="outlined" 
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">@</InputAdornment>,
-                    }} 
-                    value = {venmo} 
-                    onChange={handleVenmoChange}
-                    helperText = 'For payment splitting purposes only: Project Nimbus is 100% free.'
-                    margin='normal'
-                    style = {{width: 250}}
-                    />
-            </div>
-            <div>
-                <TextField 
-                    id="outlined-basic" 
-                    InputProps={{
-                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                    }} 
-                    label="Cashapp" 
-                    variant="outlined" 
-                    value = {cashapp} 
-                    onChange={handleCashappChange}
-                    helperText = 'For payment splitting purposes only: Project Nimbus is 100% free.'
-                    margin='normal'
-                    style = {{width: 250}}
-                    />
-            </div>
-            <div> 
-                <Button variant="contained" onClick={handleSubmit}b style = {{width: 175}}> Submit </Button>
-            </div>
->>>>>>> Stashed changes
         </div>
     )
 }
