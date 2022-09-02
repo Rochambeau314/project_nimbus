@@ -1,12 +1,11 @@
 import React, {useContext, useState} from "react";
 import {useNavigate, useParams, useLocation} from "react-router-dom";
 import axios from "axios";
-import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import logo from './nimbus_recolored.png'; 
 import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';
 import {useToken} from './AuthContext';
+import NimbusHeader from "./NimbusHeader";
 
 function ConfirmRequest() {
 
@@ -118,6 +117,7 @@ function ConfirmRequest() {
     
     return(
         <div>
+            <NimbusHeader></NimbusHeader>
             <div> confirm request </div>
             { (compare_request)
                 ? <div style={{ height: 400, width: '100%' }}>

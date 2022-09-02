@@ -2,16 +2,13 @@ import React, {useState} from "react";
 import ReactDOM from 'react-dom';
 import {useParams, useNavigate} from "react-router-dom";
 import TextField from '@material-ui/core/TextField';
-import MenuItem from '@mui/material/MenuItem';
-import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@material-ui/core/Button';
 import axios from "axios";
 import DateAdapter from '@mui/lab/AdapterDayjs';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import dayjs from "dayjs";
-import {useData} from './DataContext';
-
+import NimbusHeader from './NimbusHeader'
 function NewTrip() {
 
     const {id_token} = useParams();
@@ -122,22 +119,26 @@ function NewTrip() {
     }
     return (
         <div>
-            <div>{user}'s New Trip</div> 
-            <div> Dorm: {dorm} </div>
-            <div>Gender: {gender}</div>
-            <div>Number: {number} </div>
-            <div>Venmo: {venmo} </div>
-            <div>Cashapp: {cashapp}</div>
+            <NimbusHeader/>
+            <h3>Create a Trip</h3>
             <LocalizationProvider dateAdapter={DateAdapter}>
-            <DateTimePicker
-                label="Arrival Time"
-                value={datetime}
-                onChange={handleDatetimeChange}
-                renderInput={(params) => <TextField {...params} />}
+                <DateTimePicker
+                    label="Pickup Time"
+                    value={datetime}
+                    onChange={handleDatetimeChange}
+                    renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
             <div> </div>                
-            <TextField id="outlined-number" label="Luggage" variant="outlined" type = "number" value = {luggage} onChange={handleLuggageChange} required />
+            <TextField 
+                id="outlined-number" 
+                label="Luggage" 
+                variant="outlined" 
+                type = "number" 
+                value = {luggage} 
+                onChange={handleLuggageChange} 
+                required 
+            />
             <div></div> 
             <Button variant="contained" onClick={handleSubmit}> Submit </Button>
             <div> {message} </div> 

@@ -210,7 +210,6 @@ def create_trip(request, format=None):
         trip_data = request.data
         current_user = request.user 
         current_trips = Trip.objects.filter(student = current_user.username)
-
         # only add a new trip if the user has no current trips 
         if len(current_trips) == 0: 
             # #print('user has no trips')
