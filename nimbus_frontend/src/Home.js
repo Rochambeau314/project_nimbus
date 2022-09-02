@@ -10,6 +10,7 @@ import PendingRequests from './PendingRequests'
 import {useData, useDataUpdate} from './DataContext';
 import {useToken} from './AuthContext';
 import ConfirmedRequests from "./ConfirmedRequest";
+import NimbusHeader from "./NimbusHeader";
 function Home(){
 
     // pull the access token from the URL 
@@ -32,8 +33,7 @@ function Home(){
 
     return(
         <div>
-            <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
-            <h1> Hi {name}! Welcome to project nimbus! </h1>
+            <NimbusHeader></NimbusHeader>
 
             { (confirmed)
                 ? <ConfirmedRequests/> 

@@ -37,15 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'project_nimbus',
     'rest_framework.authtoken',
-    'corsheaders'
+    'corsheaders',
+    'project_nimbus',
+    'project_nimbus.nimbus_backend',
+
     
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
     ],
     
 }

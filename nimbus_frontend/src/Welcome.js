@@ -1,15 +1,15 @@
 import React, {useContext} from "react";
 import Login from './Login.js';
-
 import logo from './nimbus_recolored.png';
-
 
 function Welcome(){
 
     return(
         <div> 
-            <img src = {logo} alt = {"logo"} height = {200} width = {300}/>
-            <h1> welcome to project nimbus! </h1>
+            <h2> Project Nimbus </h2>
+            <img src = {logo} alt = {"logo"} height = {100} width = {150}/>
+            <h5>Safe and Efficient Rideshare Carpooling</h5>
+            <h5>Created at Vandy</h5>
             <Login/>    
     </div>
     )

@@ -17,6 +17,11 @@ from rest_framework.permissions import IsAuthenticated, AllowAny  # <-- Here
 from rest_framework.decorators import api_view, permission_classes
 from django.views.decorators.csrf import csrf_exempt
 from simplegmail import Gmail
+<<<<<<< Updated upstream
+=======
+from project_nimbus.nimbus_backend.secrets import client_secret
+from rest_framework.reverse import reverse
+>>>>>>> Stashed changes
 
 # mike perez 
 # {"token": "ya29.A0ARrdaM_ta_vv4ZpA6mTNA9eYUvEjoLChdxd0LkTImsOTEkiDQ7JTzpqFMaZg5oJNfqcYJVynf8GFUgL70K3pmpvzCU0P88QrkDw1h4Ia5LXKap4RsrBFbECfJ-YoGeu_XKzpevnKZQ9I2VpuYOC7IDQjAf3I"}
@@ -76,7 +81,11 @@ def GoogleOAuth(request, format=None):
         package = {
         'code': gCode,
         'client_id':'1004886906155-d7b2r83i0u8d7ks1bvv1b6rgrdp673gk.apps.googleusercontent.com',
+<<<<<<< Updated upstream
         'client_secret':client_secret,
+=======
+        'client_secret': client_secret,
+>>>>>>> Stashed changes
         'redirect_uri': 'http://127.0.0.1:8000/GoogleOAuth',
         'grant_type': 'authorization_code'
         }
@@ -107,10 +116,18 @@ def GoogleOAuth(request, format=None):
         # print(user_data)
 
         # search users for a current match; already existing --> sign in, no match --> create an account 
+<<<<<<< Updated upstream
 
         users_response = requests.get('http://127.0.0.1:8000/users/') # grab entire list of users 
         users = users_response.json() # convert to json 
         # print('list of users', users)
+=======
+        users = User.objects.all()
+        # users_response = requests.get('http://127.0.0.1:8000/users/') # grab entire list of users 
+        print('grabbed users')
+        # users = users_response.json() # convert to json 
+        print('list of users', users)
+>>>>>>> Stashed changes
         
 
 
@@ -126,7 +143,13 @@ def GoogleOAuth(request, format=None):
                 # print('match! sign them in!')
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
+<<<<<<< Updated upstream
                 home_link = 'http://127.0.0.1:3000/Home/' + userobj.student.token
+=======
+                # home_link = 'https://project-nimbus.vercel.app/Home/' + user.student.token
+                home_link = 'http://127.0.0.1:3000/Home/' + user.student.token
+                print('redirected to home_link')
+>>>>>>> Stashed changes
                 return redirect(home_link)
                 # sessions? 
                 # return so following code does not run 
@@ -147,7 +170,13 @@ def GoogleOAuth(request, format=None):
         # new_user.student.access_token = access_token # currently a normal access token; will probably need to be replaced by a refresh token as AT will expire 
         # new_user.save()
     
+<<<<<<< Updated upstream
         newuser_link = 'http://127.0.0.1:3000/NewUser/' + token.key
+=======
+        # newuser_link = 'https://project-nimbus.vercel.app/NewUser/' + token.key
+        newuser_link = 'http://127.0.0.1:3000/NewUser/' + token.key
+        print('redirected to newuser_link')
+>>>>>>> Stashed changes
         return redirect(newuser_link)
 
 
@@ -166,8 +195,32 @@ def create_student(request, format=None):
     
     current_user.save()
     
+<<<<<<< Updated upstream
     print('sending welcome email')
     requests.get('http://127.0.0.1:8000/send_email/', data = {'email': current_user.email})
+=======
+    #print('sending welcome email')
+    # requests.get('http://127.0.0.1:8000/send_email/', data = {'email': current_user.email})
+    gmail = Gmail()
+    params = {
+        "to": '',
+        "sender": "idlehandsvanderbilt@gmail.com",
+        "subject": '',
+        "msg_html": "",
+        "msg_plain": '',
+        "signature": True  # use my account signature
+    }
+
+    # account created; welcome to project nimbus
+    receiver_email = current_user.email
+    #print(receiver_email)
+
+    params['subject'] = 'welcome to Project Nimbus!'
+    params['msg_html'] = 'Thank you for joining Project Nimbus! <a href="vandy.link/product/project-nimbus">Project Nimbus</a> aims to enable all Vanderbilt Students to safely, successfully, and efficiently arrange rideshare carpooling to and from the airport. <br /> The project is currently in beta, so please disregard any design choices that have been made and reach out to jason.l.tan@vanderbilt.edu if you experience any bugs. Thank you very much!'
+    params['to'] = receiver_email
+
+    email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+>>>>>>> Stashed changes
 
     return Response(status=200)
 
@@ -312,7 +365,6 @@ def rideshare_request(request, format = None):
                     return(Response(rr['partner_trip']))
                 else:
                     return(Response(rr['user_trip']))
-
             elif rr['user_user'] == current_user: 
                 partner_trips.append(rr['partner_trip'][0]) 
             else:
@@ -393,6 +445,7 @@ def confirmed_request(request, format = None):
         print(user, partner)
         # change status of RideshareRequest to confirmed 
         relevant_rr_req = RideshareRequest.objects.filter(user_user = user, partner_user = partner) | RideshareRequest.objects.filter(user_user = partner, partner_user = user)
+<<<<<<< Updated upstream
         print(relevant_rr_req)
         req_obj = relevant_rr_req.first()
         req_obj.confirmed = True
@@ -422,6 +475,72 @@ def confirmed_request(request, format = None):
             # print(RideshareRequestSerializer(rr).data)
 
         return Response(status=200)
+=======
+        #print(relevant_rr_req)
+        if relevant_rr_req.exists():
+            req_obj = relevant_rr_req.first()
+            req_obj.confirmed = True
+            req_obj.save()
+
+            # TODO: mark both associated Trip objects as confirmed 
+            trip_one = Trip.objects.get(student = user)
+            #print(trip_one)
+            trip_one.confirmed = True
+            trip_one.save()
+
+            trip_two = Trip.objects.get(student=partner)
+            #print(trip_two)
+            trip_two.confirmed = True 
+            trip_two.save()
+
+            # delete all unconfirmed requests that included the 2 users that were just marked as confirmed, but not the one including both users 
+            rr_req_all = RideshareRequest.objects.filter(user_user = user) | RideshareRequest.objects.filter(partner_user = user) | RideshareRequest.objects.filter(user_user = partner) | RideshareRequest.objects.filter(partner_user = partner)
+            # #print(RideshareRequestSerializer(rr_req_user, many=True).data)
+
+            for rr in rr_req_all: 
+                #print('rr user and partner', (rr.user_user, user, rr.partner_user, partner))
+                if rr.confirmed != True: 
+                    # delete the rr_request 
+                    rr.delete()
+                # #print(RideshareRequestSerializer(rr).data)
+
+            # send email 
+            print({'user_trip': TripSerializer(trip_one).data, 'partner_trip': TripSerializer(trip_two).data})
+            # email_data = {'partner_trip': TripSerializer(trip_two).data}
+            #requests.put('http://127.0.0.1:8000/send_email/', data = {'user': user, 'partner': partner})
+
+            target_user = User.objects.get(username = user)
+            target_partner = User.objects.get(username = partner)
+            #print(target_user, target_partner)  
+
+            user_email = target_user.email
+            partner_email = target_partner.email
+            #print(user_email, partner_email)
+            
+            params = {
+                "to": '',
+                "sender": "idlehandsvanderbilt@gmail.com",
+                "subject": '',
+                "msg_html": "",
+                "msg_plain": '',
+                "signature": True  # use my account signature
+            }
+
+            params['subject'] = 'Project Nimbus: Carpool Confirmed!'
+            params['msg_html'] = 'Your Carpool Request has been Confirmed!!'
+            params['to'] = user_email
+
+            gmail = Gmail() # will open a browser window to ask you to log in and authenticate
+
+            email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+
+            params['to'] = partner_email
+            email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+
+            return Response(status=200)
+        else:
+            return Response(status=302)
+>>>>>>> Stashed changes
 
     # delete a confirmed request
     elif request.method == 'DELETE': 
@@ -476,23 +595,32 @@ def send_email(request, format=None):
         print(receiver_email)
 
         params['subject'] = 'welcome to Project Nimbus!'
-        params['msg_html'] = "Thank you for joining Project Nimbus! Project Nimbus aims to enable all Vanderbilt Students to safely, successfully, and efficiently arrange rideshare carpooling to and from the airport. <br /> The project is currently in beta, so please disregard any design choices that have been made and react out to jason.l.tan@vanderbilt.edu if you experience any bugs. Thank you very much!  ."
+        params['msg_html'] = 'Thank you for joining Project Nimbus! <a href="vandy.link/product/project-nimbus">Project Nimbus</a> aims to enable all Vanderbilt Students to safely, successfully, and efficiently arrange rideshare carpooling to and from the airport. <br /> The project is currently in beta, so please disregard any design choices that have been made and reach out to jason.l.tan@vanderbilt.edu if you experience any bugs. Thank you very much!'
         params['to'] = receiver_email
-
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
 
 
     # received a request
     elif request.method == 'POST': 
+<<<<<<< Updated upstream
         target_student = request.data['student']
         print(target_student)
         target_user = User.objects.get(username = target_student)
         print(target_user)
         receiver_email = target_user.email
         print(receiver_email)
+=======
+        partner_trip = request.data['partner_trip']
+        partner = partner_trip['student']
+        #print(target_student)
+        partner_user = User.objects.get(username = partner)
+        #print(target_user)
+        receiver_email = partner_user.email
+        #print(receiver_email)
+>>>>>>> Stashed changes
 
         params['subject'] = 'Project Nimbus: You Have a New Request!'
-        params['msg_html'] = 'You have received a rideshare request!'
+        params['msg_html'] = 'You have received a rideshare request! Visit <a href="vandy.link/product/project-nimbus">Project Nimbus</a> to view the request! '
         params['to'] = receiver_email
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
@@ -539,6 +667,29 @@ def send_email(request, format=None):
         params['msg_html'] = 'Your rideshare request has been cancelled. Submit another request here.'
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+<<<<<<< Updated upstream
 
 
     return Response(status=200)
+=======
+        return(Response(status=200))
+
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        # 'api-auth/': reverse('api-auth/', request=request, format=format),
+        # 'api-token-auth/': reverse('api-token-auth/', request=request, format=format),
+        'GoogleOAuth': reverse('GoogleOAuth', request=request, format=format),
+        'user_data': reverse('user_data', request=request, format=format),
+        'create_student': reverse('create_student', request=request, format=format),
+        'student_data': reverse('student_data', request=request, format=format),
+        'create_trip': reverse('create_trip', request=request, format=format),
+        'my_trips': reverse('my_trips', request=request, format=format),
+        'rideshare_request': reverse('rideshare_request', request=request, format=format),
+        'confirmed_request': reverse('confirmed_request', request=request, format=format),
+        'send_email/': reverse('send_email', request=request, format=format),
+        # 'user_data': reverse('user_data', request=request, format=format),
+        # 'user_data': reverse('user_data', request=request, format=format),
+
+    })
+>>>>>>> Stashed changes

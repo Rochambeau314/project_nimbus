@@ -62,8 +62,21 @@ function RideShare() {
             }
             console.log(rideshare_data)
             axios.post(rideshareRequestURL, rideshare_data, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+<<<<<<< Updated upstream
             axios.delete(messageURL, state, { headers: {"Authorization": `Token ${id_token}`} }) // send email to the partner notifying them that the request was deleted
             navigate(`../Home/${id_token}`, { replace: false });
+=======
+            .then((response) => {
+                if (response.status === 302){
+                    navigate(`../Error/${id_token}`, { replace: false });
+                }
+                navigate(`../Home/${id_token}`, { replace: false });
+                axios.post(messageURL, rideshare_data, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
+
+
+            })
+            
+>>>>>>> Stashed changes
         };
 
     return(

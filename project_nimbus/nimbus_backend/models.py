@@ -24,7 +24,7 @@ class Student(models.Model):
         ('V', 'Village')
     ]
     dorm = models.CharField(
-        max_length=1,
+        max_length=2,
         choices=DORM_LOCATIONS,
         # default=None,
     )
@@ -46,6 +46,9 @@ class Student(models.Model):
     venmo = models.TextField(default = "")
 
     cashapp = models.TextField(default = "")
+
+    def __str__(self):
+        return self.user
     
     @receiver(post_save, sender=User)
     def create_student(sender, instance, created, **kwargs):
@@ -73,7 +76,7 @@ class Trip(models.Model):
         ('V', 'Village')
     ]
     dorm = models.CharField(
-        max_length=1,
+        max_length=2,
         choices=DORM_LOCATIONS,
         # default=None,
     )

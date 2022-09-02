@@ -16,7 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import routers
-from project_nimbus.nimbus_backend import views 
+from project_nimbus.nimbus_backend import views
+from project_nimbus.nimbus_backend.views import api_root 
 from rest_framework.authtoken.views import obtain_auth_token
 
 router = routers.DefaultRouter()
@@ -25,7 +26,7 @@ router.register(r'groups', views.GroupViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include(router.urls)),
+    path('', api_root),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('api-token-auth/', obtain_auth_token, name='api_token_auth'),  # <-- And here
     path('GoogleOAuth', views.GoogleOAuth, name = 'GoogleOAuth'),
