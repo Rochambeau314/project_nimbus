@@ -59,6 +59,7 @@ class Student(models.Model):
     def save_student(sender, instance, **kwargs):
         instance.student.save()
 
+
 class Trip(models.Model):
     trip_id = models.AutoField(primary_key=True)
 
@@ -81,9 +82,16 @@ class Trip(models.Model):
         # default=None,
     )
 
-    pickup_time = models.DateTimeField(default=datetime.now())
     number_of_bags = models.TextField(default = "")
     confirmed = models.BooleanField(default = False)
+
+    trip_datetime = models.TextField(default = "")
+    day = models.TextField(default = "")
+    hour = models.TextField(default = "")
+    minute = models.TextField(default = "")
+    month = models.TextField(default = "")
+    weekday = models.TextField(default = "")
+    ap = models.TextField(default = "")
 
 class RideshareRequest(models.Model):
 
@@ -98,6 +106,4 @@ class RideshareRequest(models.Model):
     partner_trip = models.ManyToManyField(Trip, related_name = 'p_trip')
 
     # if the rideshare was confirmed or not 
-    confirmed = models.BooleanField()
-
-
+    confirmed = models.BooleanField()    

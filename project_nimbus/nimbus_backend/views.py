@@ -213,14 +213,28 @@ def create_trip(request, format=None):
         # only add a new trip if the user has no current trips 
         if len(current_trips) == 0: 
             # #print('user has no trips')
-            new_trip = Trip(student = current_user, dorm = trip_data['dorm'], pickup_time = trip_data['pickup_time'], number_of_bags=trip_data['number_of_bags'])
+            new_trip = Trip(student = current_user, dorm = trip_data['dorm'], number_of_bags=trip_data['number_of_bags'])
+            new_trip.trip_datetime = trip_data['trip_datetime']
+            new_trip.weekday = trip_data['weekday']
+            new_trip.month = trip_data['month']
+            new_trip.day = trip_data['day']
+            new_trip.hour = trip_data['hour']
+            new_trip.minute = trip_data['minute']
+            new_trip.ap = trip_data['ap']
             new_trip.save()
         
-        # if the user has already created a trip, tell the browser to send an error saying that the user already has a trip created 
         else: 
             # #print('user has a trip already')
             current_trips.delete()
-            new_trip = Trip(student = current_user, dorm = trip_data['dorm'], pickup_time = trip_data['pickup_time'], number_of_bags=trip_data['number_of_bags'])
+            new_trip = Trip(student = current_user, dorm = trip_data['dorm'], trip_datetime = trip_data['trip_datetime'], number_of_bags=trip_data['number_of_bags'])
+            new_trip.trip_datetime = trip_data['trip_datetime']
+            new_trip.weekday = trip_data['weekday']
+            new_trip.month = trip_data['month']
+            new_trip.day = trip_data['day']
+            new_trip.hour = trip_data['hour']
+            new_trip.minute = trip_data['minute']
+            new_trip.ap = trip_data['ap']
+        
             new_trip.save()
 
         return Response(status=200)
