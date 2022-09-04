@@ -54,16 +54,9 @@ function PendingRequests() {
 
     return(
         <div>
-            <h1> My Pending Requests </h1>
+            <h2 style= {{'textAlign': 'left'}}> Pending Matches </h2> 
             { (pending_req)
-                ? <div style={{ height: 400, width: '50%', margin: "auto"}}>
-                    <DataGrid getRowId={row => row.trip_id}
-                        rows={pending_req} 
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        disableSelectionOnClick={true}
-                        onRowClick={(data) => handleClick(data['row'])}/>
+                ? <div>
                 </div>
                 :<div></div>
             }
@@ -74,3 +67,13 @@ export default PendingRequests
 
 
 // display comparison between current user and the potential rideshare partner 
+// ? <div style={{ height: 400, width: '50%', margin: "auto"}}>
+// <DataGrid getRowId={row => row.trip_id}
+//     rows={pending_req} 
+//     columns={columns}
+//     pageSize={5}
+//     rowsPerPageOptions={[5]}
+//     disableSelectionOnClick={true}
+//     onRowClick={(data) => handleClick(data['row'])}/>
+// </div>
+// :<div></div>

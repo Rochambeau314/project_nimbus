@@ -11,6 +11,7 @@ import {useData, useDataUpdate} from './DataContext';
 import {useToken} from './AuthContext';
 import ConfirmedRequests from "./ConfirmedRequest";
 import NimbusHeader from "./NimbusHeader";
+import Trip from './Trip';
 function Home(){
 
     // pull the access token from the URL 
@@ -34,7 +35,6 @@ function Home(){
     return(
         <div>
             <NimbusHeader></NimbusHeader>
-
             { (confirmed)
                 ? <ConfirmedRequests/> 
                 : <div>

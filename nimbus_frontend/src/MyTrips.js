@@ -15,9 +15,6 @@ function MyTrips(){
 
     //variable for trip data 
     const my_trip = useData()['user_trips']
-    if (my_trip){
-        console.log('my_trip', my_trip[0]['weekday'])
-    }
 
     // variable for button text (new trip vs edit trip 
     let message = "" 
@@ -36,19 +33,23 @@ function MyTrips(){
         // redirect to new trip 
         navigate(`../NewTrip/${id_token}`, { replace: false });
     };
-return(
-    <div> 
-        <h1>My Trip </h1> 
-        { (my_trip.length > 0)
-            ? <div>
-                <div onClick = {handleSubmit} style= {{'display':'inline-block', 'vertical-align':'left'}}> {my_trip[0]['weekday']}, {my_trip[0]['month']} {my_trip[0]['day']} | {my_trip[0]['hour']}:{my_trip[0]['minute']} {my_trip[0]['ap']} | {my_trip[0]['dorm']}</div>
-                <div style= {{'display':'inline-block', 'vertical-align':'left'}}> 
-                    <ArrowDropDownIcon/> 
+
+    // <h2 style= {{'textAlign': 'left'}}>My Trip </h2> 
+
+    return(
+        <div> 
+            { (my_trip.length > 0)
+                ? <div>
+                    <div onClick = {handleSubmit} style= {{'display':'inline-block', 'verticalAlign':'left'}}> 
+                        {my_trip[0]['weekday']}, {my_trip[0]['month']} {my_trip[0]['day']} | {my_trip[0]['hour']}:{my_trip[0]['minute']} {my_trip[0]['ap']} | {my_trip[0]['dorm']}
+                    </div>
+                    <div style= {{'display':'inline-block', 'verticalAlign':'left'}}> 
+                        <ArrowDropDownIcon/> 
+                    </div>
                 </div>
-            </div>
-            : <Button variant="contained" onClick={handleSubmit}> {"Create a Trip"} </Button>  
-        }
-    </div>
+                : <Button variant="contained" onClick={handleSubmit}> {"Create a Trip"} </Button>  
+            }
+        </div>
 
 )
 }

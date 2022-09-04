@@ -7,52 +7,35 @@ import logo from './nimbus_recolored.png';
 import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';  
 import {useToken} from './AuthContext';
+import Trip from './Trip';
+import Stack from '@mui/material/Stack';
+import Divider from '@mui/material/Divider';
 
 function Trips(){    
     const {token} = useToken() 
     const context_data = useData(); 
     const [data, setData] = useState([]) 
+
     React.useEffect(() => {
         console.log('trips useEffect has updated the data')
         setData(context_data);  
     }); 
       
-    console.log('data in trips', data)  
-    const other_trips = data['other_trips']
-    console.log('other_trips', data['other_trips']) 
+    const other_trips = data['other_trips'] 
 
-    const user_trip = data['user_trips']  
-
-    const columns = [ 
-        {
-            field: 'student',
-            headerName: 'name',
-            width: 150,
-            editable: false,
-        },
-        {
-            field: 'dorm',
-            headerName: 'dorm',
-            width: 150,
-            editable: false,
-        },
-        {
-            field: 'pickup_time',
-            headerName: 'time',
-            type: 'dateTime',
-            width: 200,
-            valueGetter: ({ value }) => value && new Date(value),
-            editable: false,
-        },
-        {
-            field: 'number_of_bags',
-            headerName: 'luggage',
-            type: 'number',
-            width: 110,
-            editable: false, 
-        },
-
-    ];
+    const [othertrips_components, setComp] = useState('othertrips_components')
+    React.useEffect(() => {
+        if (other_trips !== undefined){
+            if (Object.keys(other_trips).length !== 0){
+                console.log('other_trips in useEffect', other_trips)
+                //const otrips_comp = other_trips.map((other_trip) => other_trip)
+                const otrips_comp = other_trips.map((other_trip) => <Trip data={other_trip} ></Trip>)
+                setComp(otrips_comp)
+            }   
+        }   
+    }, [other_trips]); 
+    
+    
 
     // redirects to specific trip when a trip is clicked 
     let navigate = useNavigate();
@@ -60,22 +43,21 @@ function Trips(){
         console.log('clicked!', data)
         navigate(`../RideShare/${data['student']}/${token}`, {state: data});
     } 
-return(
-    <div> 
-        <h1>All Trips </h1> 
-        <div style={{ height: 400, width: '50%', margin: 'auto' }}>
-        <DataGrid getRowId={row => row.student}
-            rows={other_trips} 
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-            disableSelectionOnClick={true}
-            onRowClick={(data) => handleTripClick(data['row'])}
-        />
-        </div>
-    </div>
+    console.log(othertrips_components)
 
-)
+    // white divider: sx={{ bgcolor: "white" }}
+    return(
+        <div> 
+            <h2 style= {{'textAlign': 'left'}} >All Trips </h2> 
+            { (other_trips !== undefined && Object.keys(other_trips).length !== 0)
+                ? <Stack justifyContent="left" alignItems="left" spacing = {1.25} divider={<Divider orientation="horizontal" flexItem sx={{ bgcolor: "black" }}/>} > 
+                    {othertrips_components}
+                </Stack>
+                : <div> 0 </div>
+            }
+
+        </div>
+    )
 }
 
 export default Trips 
