@@ -40,11 +40,16 @@ function ConfirmedRequests(){
 
     let navigate = useNavigate();
     const deleteRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
+    const messageURL = `${'http://127.0.0.1:8000'}/send_email/`
+
     async function handleDelete() {
         axios.delete(deleteRequestURL, { headers: {"Authorization": `Token ${id_token}`}, "data": trips }) // need to check if succeeded before redirecting
         console.log('submitted a delete request')
+        console.log('data sent', trips)
+        const dat = {'user_trip': [trips[0]], partner_trip: [trips[1]]}
+        axios.delete(messageURL, { headers: {"Authorization": `Token ${id_token}`}, 'data': dat}) // send email to the partner notifying them that they have a new rr_request 
 
-        navigate(`../Home/${id_token}`, { replace: true })
+        navigate(`../Home/${id_token}`, { replace: false })
     };
 
 

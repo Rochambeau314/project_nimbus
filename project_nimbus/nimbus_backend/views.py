@@ -472,12 +472,6 @@ def confirmed_request(request, format = None):
         # delete the specific request 
         rr_request.delete()
 
-        # send email
-        requests.delete('http://127.0.0.1:8000/send_email/', data = {'user_name': user_name, 'partner_name': partner_name})
-
-
-
-
         return Response(status=200)
 
 @csrf_exempt
@@ -550,11 +544,12 @@ def send_email(request, format=None):
         #print('del', request.data)
         
         data = request.data
+        print('send deleted email', data)
 
-        user_name = data['user_name']
+        user_name = data['user_trip'][0]['student']
         user_email = User.objects.get(username=user_name).email
 
-        partner_name = data['partner_name']
+        partner_name = data['partner_trip'][0]['student']
         partner_email = User.objects.get(username=partner_name).email
 
         print(user_email, partner_email)
