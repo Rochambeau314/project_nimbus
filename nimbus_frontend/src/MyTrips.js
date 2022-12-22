@@ -31,7 +31,7 @@ function MyTrips(){
     let navigate = useNavigate();
     async function handleSubmit(event) {
         // redirect to new trip 
-        navigate(`../NewTrip/${id_token}`, { replace: false });
+        navigate(`../NewTrip/${id_token}`, { replace: false }); 
     };
 
     // <h2 style= {{'textAlign': 'left'}}>My Trip </h2> 

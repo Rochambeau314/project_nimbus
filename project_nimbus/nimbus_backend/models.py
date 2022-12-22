@@ -6,58 +6,53 @@ from django.dispatch import receiver
 from datetime import datetime 
 from rest_framework.authtoken.models import Token
 
-class Student(models.Model):
-    # links each student to their default User model
-    user = models.OneToOneField(User, on_delete=models.CASCADE) # I think this extends the User model? Not sure tbh ()
+# class Student(models.Model):
+#     # links each student to their default User model
+#     user = models.OneToOneField(User, on_delete=models.CASCADE) # I think this extends the User model? Not sure tbh ()
 
-    token = models.TextField(default = "")
+#     token = models.TextField(default = "")
 
-    DORM_LOCATIONS = [
-        ('K', 'Kissam'),
-        ('E', 'EBI'),
-        ('Z', 'Zeppos'),
-        ('Ro', 'Rothschild'),
-        ('Ra', 'Rand'),
-        ('B', 'Branscomb'),
-        ('H', 'Highland'),
-        ('C', 'Commons'),
-        ('V', 'Village')
-    ]
-    dorm = models.CharField(
-        max_length=2,
-        choices=DORM_LOCATIONS,
-        # default=None,
-    )
+#     DORM_LOCATIONS = [
+#         ('K', 'Kissam'),
+#         ('E', 'EBI'),
+#         ('Z', 'Zeppos'),
+#         ('Ro', 'Rothschild'),
+#         ('Ra', 'Rand'),
+#         ('B', 'Branscomb'),
+#         ('H', 'Highland'),
+#         ('C', 'Commons'),
+#         ('V', 'Village')
+#     ]
 
-    GENDER_CHOICES = [
-        ('M', 'Male'),
-        ('F', 'Female'),
-        ('O', 'Other'),
+#     GENDER_CHOICES = [
+#         ('M', 'Male'),
+#         ('F', 'Female'),
+#         ('O', 'Other'),
 
-    ]
-    gender = models.CharField(
-        max_length=1,
-        choices=GENDER_CHOICES,
-        # default=None,
-    )
+#     ]
+#     gender = models.CharField(
+#         max_length=1,
+#         choices=GENDER_CHOICES,
+#         # default=None,
+#     )
 
-    phone_number = models.TextField(default = "")
+#     phone_number = models.TextField(default = "")
 
-    venmo = models.TextField(default = "")
+#     venmo = models.TextField(default = "")
 
-    cashapp = models.TextField(default = "")
+#     cashapp = models.TextField(default = "")
 
-    def __str__(self):
-        return self.user
+#     def __str__(self):
+#         return self.user
     
-    @receiver(post_save, sender=User)
-    def create_student(sender, instance, created, **kwargs):
-        if created:
-            Student.objects.create(user=instance)
+#     @receiver(post_save, sender=User)
+#     def create_student(sender, instance, created, **kwargs):
+#         if created:
+#             Student.objects.create(user=instance)
     
-    @receiver(post_save, sender=User)
-    def save_student(sender, instance, **kwargs):
-        instance.student.save()
+#     @receiver(post_save, sender=User)
+#     def save_student(sender, instance, **kwargs):
+#         instance.student.save()
 
 
 class Trip(models.Model):
@@ -79,7 +74,6 @@ class Trip(models.Model):
     dorm = models.CharField(
         max_length=2,
         choices=DORM_LOCATIONS,
-        # default=None,
     )
 
     number_of_bags = models.TextField(default = "")

@@ -9,6 +9,8 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DateTimePicker from '@mui/lab/DateTimePicker';
 import dayjs from "dayjs";
 import NimbusHeader from './NimbusHeader'
+import MenuItem from '@mui/material/MenuItem';
+
 function formatDT(dt){
     const months = [
         "January", "February", "March", "April", "May", "June", "July",
@@ -57,9 +59,6 @@ function NewTrip() {
     // name from user
     const [user, setUser] = React.useState('');
 
-    // dorm from student
-    const [dorm, setDorm] = React.useState('');
-
     // var for arrival time 
     const [datetime, setDatetime] = React.useState(dayjs());
     const [dt_dict, setDT] = React.useState(formatDT(datetime));
@@ -70,6 +69,23 @@ function NewTrip() {
     }
 
 
+    // dorm 
+    // dorm locations 
+    const DORM_LOCATIONS = [
+        {value: 'Kissam', label: 'Kissam'},
+        {value: 'EBI', label: 'EBI'},
+        {value: 'Zeppos', label: 'Zeppos'},
+        {value: 'Rothschild', label: 'Rothschild'},
+        {value: 'Commons', label: 'Commons'},
+        {value: 'Village', label: 'Village'},
+        {value: 'Rand', label: 'Rand'},
+        {value: 'Branscomb', label: 'Branscomb'},
+        {value: 'Highland', label: 'Highland'},
+    ]
+    const [dorm, setDorm] = React.useState('Kissam');
+    const handleDormChange = (event) => {
+        setDorm(event.target.value);
+    };
 
     // number of bags 
     const [luggage, setLuggage] = React.useState('');
@@ -87,7 +103,7 @@ function NewTrip() {
     
     // request user/student data 
     const userDataURL = `${'http://127.0.0.1:8000'}/user_data`;
-    const studentDataURL = `${'http://127.0.0.1:8000'}/student_data`;
+    // const studentDataURL = `${'http://127.0.0.1:8000'}/student_data`;
     React.useEffect(() => {
         axios.get(userDataURL, { headers: {"Authorization": `Token  ${id_token}`} })
             .then((response) => {
@@ -96,12 +112,12 @@ function NewTrip() {
             console.log('testing')
             setUser(user_data.name)
         });
-        axios.get(studentDataURL, { headers: {"Authorization": `Token  ${id_token}`} })
-            .then((response) => {
-            const student_data = response.data;
-            console.log(student_data)
-            setDorm(student_data.dorm)
-        });
+        // axios.get(studentDataURL, { headers: {"Authorization": `Token  ${id_token}`} })
+        //     .then((response) => {
+        //     const student_data = response.data;
+        //     console.log(student_data)
+        //     setDorm(student_data.dorm)
+        // });
       }, []);
 
       let navigate = useNavigate();
@@ -118,7 +134,7 @@ function NewTrip() {
                             ap: dt_dict['ap']}
           console.log(trip_data)
   
-          // send student_data to the backend 
+          // send trip data to the backend 
           const create_trip_baseURL = `${'http://127.0.0.1:8000'}/create_trip`;
           axios.post(create_trip_baseURL, trip_data, { headers: {"Authorization": `Token  ${id_token}`}})
             .then((response) => {
@@ -159,7 +175,7 @@ function NewTrip() {
     return (
         <div>
             <NimbusHeader/>
-            <h3>Create a Trip</h3>
+            <h3>Create Your Trip</h3>
             <LocalizationProvider dateAdapter={DateAdapter}>
                 <DateTimePicker
                     label="Pickup Time"
@@ -168,7 +184,26 @@ function NewTrip() {
                     renderInput={(params) => <TextField {...params} />}
                 />
             </LocalizationProvider>
-            <div> </div>                
+            <div> </div>
+            <div>
+                <TextField 
+                    id="outlined-select-dorm" 
+                    select
+                    label="Dorm" 
+                    variant="outlined" 
+                    required  
+                    value = {dorm} onChange={handleDormChange}
+                    helperText = "Select Your Pickup/Dropoff Point" 
+                    style = {{width: 250}}
+                    margin='normal'
+                >
+                    {DORM_LOCATIONS.map((option) => (
+                    <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                    </MenuItem>
+                    ))}
+                </TextField>
+            </div>         
             <TextField 
                 id="outlined-number" 
                 label="Luggage" 

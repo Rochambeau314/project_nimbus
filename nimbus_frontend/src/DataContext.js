@@ -25,8 +25,8 @@ export function DataProvider({children}) {
     //
     const newtripURL = `${'http://127.0.0.1:8000'}/create_trip`;
  
-    // pull current student data
-    const studentURL = `${'http://127.0.0.1:8000'}/student_data`;
+    // // pull current student data
+    // const studentURL = `${'http://127.0.0.1:8000'}/student_data`;
  
     // pull user data from backend 
     const userURL = `${'http://127.0.0.1:8000'}/user_data`;
@@ -41,7 +41,7 @@ export function DataProvider({children}) {
 
     const [data, setData] = useState({
         'user': {},
-        'student': {},    
+        // 'student': {},    
         'other_trips': {},
         'user_trips': {},     
         'pending_requests': {},
@@ -53,19 +53,19 @@ export function DataProvider({children}) {
         const fetchData = async () => {  
             const data = {
                 'user': {},
-                'student': {},    
+                // 'student': {},    
                 'other_trips': {},
                 'user_trips': {},    
-                'pending_requests': [],
+                'pending_requests': [], 
                 'confirmed_request': {}
             }
             const user = await axios.get(userURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('user', user.data)
             data['user'] = user.data
 
-            const student = await axios.get(studentURL, { headers: {"Authorization": `Token ${token}`} })
-            console.log('student', student.data)
-            data['student'] = student.data
+            // const student = await axios.get(studentURL, { headers: {"Authorization": `Token ${token}`} })
+            // console.log('student', student.data)
+            // data['student'] = student.data
 
             const user_trips = await axios.get(tripURL, { headers: {"Authorization": `Token ${token}`} })
             console.log('user_trips', user_trips.data)

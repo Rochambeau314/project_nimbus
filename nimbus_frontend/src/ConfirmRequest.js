@@ -6,6 +6,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';
 import {useToken} from './AuthContext';
 import NimbusHeader from "./NimbusHeader";
+import Trip from './Trip';
+import Stack from '@mui/material/Stack';
 
 function ConfirmRequest() {
 
@@ -21,12 +23,24 @@ function ConfirmRequest() {
     const compare_request = user_trip.concat(state)
     console.log('compare_request', compare_request)
 
-    const compare_data = {user_trip, partner_trip}
+    const [confirm_components, setComp] = useState('confirm_components')
+    React.useEffect(() => {
+        if (compare_request !== undefined){
+            if (Object.keys(compare_request).length !== 0){
+                console.log('other_trips in useEffect', compare_request)
+                const conf_comp = compare_request.map((trip) => <Trip key = {trip.trip_id} data={trip} ></Trip>)
+                setComp(conf_comp)
+            }   
+        }   
+    }, [user_trip]); // not working i dont think 
+
+
 
     // pull the rideshare request from the backend depending on user_trip and state (the trip that was clicked)
     const [specific, setSpecific] = useState();
+    const compare_data = {user_trip, partner_trip}
+    console.log('compare_data', compare_data)
 
-    
     const pullRequestURL = `${'http://127.0.0.1:8000'}/rideshare_request`;
     React.useEffect(() => {
         // pull the rideshare request data from the backend 
@@ -49,36 +63,6 @@ function ConfirmRequest() {
     
     console.log('specific', specific)
 
-    const columns = [
-        {
-            field: 'student',
-            headerName: 'name',
-            width: 150,
-            editable: false,
-        },
-        {
-            field: 'dorm',
-            headerName: 'dorm',
-            width: 150,
-            editable: false,
-        },
-        {
-            field: 'pickup_time',
-            headerName: 'time',
-            type: 'dateTime',
-            width: 200, 
-            valueGetter: ({ value }) => value && new Date(value),
-            editable: false,
-        },
-        {
-            field: 'number_of_bags',
-            headerName: 'luggage',
-            type: 'number',
-            width: 110,
-            editable: false, 
-        },  
-    ]
-
     // send rideshare request data to backend, redirect to scheduled rideshares 
     let navigate = useNavigate();
     const messageURL = `${'http://127.0.0.1:8000'}/send_email/`
@@ -86,15 +70,16 @@ function ConfirmRequest() {
     const [message, setMessage] = useState("")
     const confirmRequestURL = `${'http://127.0.0.1:8000'}/confirmed_request`;
     async function handleConfirm() {
-        if(Object.is(user_trip[0]['student'], specific['user_trip'][0]['student'])) {
+        if(Object.is(user_trip[0]['student'], specific['user_trip'][0]['student'])) 
+        {
             console.log('user created the request; redirect to home')
         }
-        else{
+
+        else
+        {
             axios.post(confirmRequestURL, compare_request, { headers: {"Authorization": `Token ${id_token}`} }) // need to check if succeeded before redirecting
-            axios.put(messageURL, compare_data, { headers: {"Authorization": `Token ${id_token}`} }) // send email to the partner notifying them that they have a new rr_request 
+            axios.put(messageURL, [specific['user_user'], specific['partner_user']], { headers: {"Authorization": `Token ${id_token}`} }) // send email to the partner notifying them that they have a new rr_request 
             console.log('request confirmed!')
-
-
         }
         navigate(`../Home/${id_token}`, { replace: false });
     };
@@ -114,21 +99,17 @@ function ConfirmRequest() {
         // redirect to home 
         navigate(`../Home/${id_token}`, { replace: false });
     };
+
     
     return(
         <div>
             <NimbusHeader></NimbusHeader>
-            <div> confirm request </div>
-            { (compare_request)
-                ? <div style={{ height: 400, width: '100%' }}>
-                    <DataGrid getRowId={row => row.trip_id}
-                        rows={compare_request} 
-                        columns={columns}
-                        pageSize={5}
-                        rowsPerPageOptions={[5]}
-                        disableSelectionOnClick={true}/>
-                </div>
-                :<div></div>
+            <h2> Confirm Request? </h2>
+            { (compare_request !== undefined && Object.keys(compare_request).length !== 0)
+                ? <Stack justifyContent="left" alignItems="left" spacing = {1.25} > 
+                    {confirm_components}
+                </Stack>
+                : <div> 0 </div>
             }
             <Button variant="contained" onClick={handleConfirm}> {message} </Button>
             <Button variant="contained" onClick={handleDelete}> delete </Button>

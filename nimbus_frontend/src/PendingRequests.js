@@ -4,76 +4,50 @@ import axios from "axios";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import logo from './nimbus_recolored.png'; 
-import { DataGrid } from '@mui/x-data-grid';
 import {useData} from './DataContext';
 import {useToken} from './AuthContext';
+import Trip from './Trip';
+import Stack from '@mui/material/Stack';
 
 function PendingRequests() {
     const {id_token} = useParams();
-
+    //console.log(id_token)
+    
+    // data
     const pending_req = useData()['pending_requests']
     console.log('pending_requests', pending_req)
 
-    const columns = [ 
-        {
-            field: 'student',
-            headerName: 'name',
-            width: 150,
-            editable: false,
-        },
-        {
-            field: 'dorm',
-            headerName: 'dorm',
-            width: 150,
-            editable: false,
-        },
-        {
-            field: 'pickup_time',
-            headerName: 'time',
-            type: 'dateTime',
-            width: 200, 
-            valueGetter: ({ value }) => value && new Date(value),
-            editable: false,
-        },
-        {
-            field: 'number_of_bags',
-            headerName: 'luggage',
-            type: 'number',
-            width: 110,
-            editable: false, 
-        },  
-    ]
 
-        // send rideshare request data to backend, redirect to scheduled rideshares 
-        let navigate = useNavigate();
-        async function handleClick(data) {
-            console.log('PendingRequests --> ConfirmRequest',data)
-            console.log('redirected to comparison page! ')
-            navigate(`../ConfirmRequest/${data['student']}/${id_token}`, {state: data});
-        };
+    // redirects to specific trip when a trip is clicked 
+    let navigate = useNavigate();
+    async function handleTripClick(event, data){ 
+        console.log('clicked!', data)
+        navigate(`../ConfirmRequest/${data['student']}/${id_token}`, {state: data});
+    } 
+
+    const [othertrips_components, setComp] = useState('othertrips_components')
+    React.useEffect(() => {
+        if (pending_req !== undefined){
+            if (Object.keys(pending_req).length !== 0){
+                console.log('other_trips in useEffect', pending_req)
+                //const otrips_comp = other_trips.map((other_trip) => other_trip)
+                const otrips_comp = pending_req.map((pending_trip) => <Trip key = {pending_trip.trip_id} data={pending_trip} handleTripClick = {event => handleTripClick(event, pending_trip)}></Trip>)
+                setComp(otrips_comp)
+            }   
+        }   
+    }, [pending_req]); 
 
     return(
         <div>
             <h2 style= {{'textAlign': 'left'}}> Pending Matches </h2> 
-            { (pending_req)
-                ? <div>
-                </div>
-                :<div></div>
+            { (pending_req !== undefined && Object.keys(pending_req).length !== 0)
+                ? <Stack justifyContent="left" alignItems="left" spacing = {1.25} > 
+                    {othertrips_components}
+                </Stack>
+                : <div> None yet... tap on a trip to submit a request, or sit tight! </div>
             }
         </div>)
 } 
 
 export default PendingRequests 
 
-
-// display comparison between current user and the potential rideshare partner 
-// ? <div style={{ height: 400, width: '50%', margin: "auto"}}>
-// <DataGrid getRowId={row => row.trip_id}
-//     rows={pending_req} 
-//     columns={columns}
-//     pageSize={5}
-//     rowsPerPageOptions={[5]}
-//     disableSelectionOnClick={true}
-//     onRowClick={(data) => handleClick(data['row'])}/>
-// </div>
-// :<div></div>

@@ -1,7 +1,7 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import viewsets, permissions, status, request
-from project_nimbus.nimbus_backend.serializers import RideshareRequestSerializer, TripSerializer, UserSerializer, GroupSerializer, StudentSerializer
-from project_nimbus.nimbus_backend.models import RideshareRequest, Trip, Student
+from project_nimbus.nimbus_backend.serializers import RideshareRequestSerializer, TripSerializer, UserSerializer, GroupSerializer #, StudentSerializer
+from project_nimbus.nimbus_backend.models import RideshareRequest, Trip # , Student
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.decorators import api_view
 import requests
@@ -71,6 +71,9 @@ def GoogleOAuth(request, format=None):
         # pull out Google Auth code 
         gCode = data['code']
 
+        # client secret 
+        client_secret = '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'
+
         package = {
         'code': gCode,
         'client_id':'1004886906155-d7b2r83i0u8d7ks1bvv1b6rgrdp673gk.apps.googleusercontent.com',
@@ -82,7 +85,7 @@ def GoogleOAuth(request, format=None):
         # ask Google for access token 
         response = requests.post('https://oauth2.googleapis.com/token', data=package)
         json_response = response.json()
-        print('json_response', json_response)
+        # print('json_response', json_response)
 
         # isolate the access token from the header and rest of data 
         # #print('access token', access_token)
@@ -90,12 +93,11 @@ def GoogleOAuth(request, format=None):
         # isolate the id token from the header and rest of data 
         id_token = json_response['id_token']
         # #print(id_token)
-
         # decode id token 
         # audience = '926069317015-pgfot71erehglt8biagmqr16p06eqa30.apps.googleusercontent.com' # why did I not need this before? 
         decoded_id_token = jwt.decode(id_token, options={"verify_signature": False})
         # #print(decoded_id_token)
-
+        print('id token decoded')
         # pull name and email 
 
         name = decoded_id_token['name'].replace(" ", "")
@@ -116,90 +118,33 @@ def GoogleOAuth(request, format=None):
             print(user_email, user.email, user_email == user.email)
 
             if user.username == name and user.email == user_email:
-                print(user.student.token)
                 print('match! sign them in!')
 
                 # send token to frontend; frontend will sign the user in and redirect to Dashboard 
                 # home_link = 'https://project-nimbus.vercel.app/Home/' + user.student.token
-                home_link = 'http://127.0.0.1:3000/Home/' + user.student.token
+
+                home_link = 'http://127.0.0.1:3000/Home/' + Token.objects.get(user_id=user.id).key
                 print('redirected to home_link')
                 return redirect(home_link)
 
         # no match: create a new account 
+
         # call a method to create a new user: username = name, email = user_email, student = null 
         new_user = User.objects.create(
             username = name,
             email = user_email)
-
-        # #print(new_user)
-
+        
         token = Token.objects.create(user=new_user)
-        print('token', token)
-        new_user.student.token = token.key
-        new_user.save()
+        # new_user.token = token 
+        # new_user.save()
+
+        print(new_user)
     
         # newuser_link = 'https://project-nimbus.vercel.app/NewUser/' + token.key
-        newuser_link = 'http://127.0.0.1:3000/NewUser/' + token.key
+        newtrip_link = 'http://127.0.0.1:3000/NewTrip/' + token.key
         print('redirected to newuser_link')
-        return redirect(newuser_link)
+        return redirect(newtrip_link)
 
-
-@csrf_exempt
-@api_view(['POST'])
-@permission_classes([IsAuthenticated])
-def create_student(request, format=None):
-    student_data = request.data
-    current_user = request.user 
-    current_user.student.dorm = student_data['dorm']
-    current_user.student.gender = student_data['gender']
-    current_user.student.phone_number = student_data['phone_number'] 
-    current_user.student.venmo = student_data['venmo']
-    current_user.student.cashapp = student_data['cashapp']
-    
-    current_user.save()
-    
-    #print('sending welcome email')
-    # requests.get('http://127.0.0.1:8000/send_email/', data = {'email': current_user.email})
-    gmail = Gmail()
-    params = {
-        "to": '',
-        "sender": "idlehandsvanderbilt@gmail.com",
-        "subject": '',
-        "msg_html": "",
-        "msg_plain": '',
-        "signature": True  # use my account signature
-    }
-
-    # account created; welcome to project nimbus
-    receiver_email = current_user.email
-    #print(receiver_email)
-
-    params['subject'] = 'welcome to Project Nimbus!'
-    params['msg_html'] = 'Thank you for joining Project Nimbus! <a href="vandy.link/product/project-nimbus">Project Nimbus</a> aims to enable all Vanderbilt Students to safely, successfully, and efficiently arrange rideshare carpooling to and from the airport. <br /> The project is currently in beta, so please disregard any design choices that have been made and reach out to jason.l.tan@vanderbilt.edu if you experience any bugs. Thank you very much!'
-    params['to'] = receiver_email
-
-    email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-
-    return Response(status=200)
-
-@csrf_exempt
-@api_view(['GET', "POST"])
-@permission_classes([IsAuthenticated])
-def student_data(request, format=None):
-    if request.method == 'GET': 
-        current_user = request.user
-        student = current_user.student
-        serializer = StudentSerializer(student) 
-        # #print(student)
-    elif request.method == 'POST': 
-        name_dict = request.data.keys()
-        name = [str(key) for key in name_dict]
-        #print(name)        
-
-        user = User.objects.get(username = name[0])
-        serializer = StudentSerializer(user.student)
-
-    return Response(serializer.data, status=200)
 
 @csrf_exempt
 @api_view(['GET', 'POST'])
@@ -210,6 +155,7 @@ def create_trip(request, format=None):
         trip_data = request.data
         current_user = request.user 
         current_trips = Trip.objects.filter(student = current_user.username)
+        print(trip_data)
         # only add a new trip if the user has no current trips 
         if len(current_trips) == 0: 
             # #print('user has no trips')
@@ -329,6 +275,7 @@ def rideshare_request(request, format = None):
         for rr in serializer.data: 
             if rr['confirmed']: 
                 if rr['user_user'] == current_user: 
+                    
                     return(Response(rr['partner_trip']))
                 else:
                     return(Response(rr['user_trip']))
@@ -344,7 +291,7 @@ def rideshare_request(request, format = None):
     # return a specific rideshare request
     elif request.method == 'PUT': 
 
-        #print(request.data)
+        print(request.data)
 
         # grab names 
         user_name = request.data['user_trip'][0]['student']
@@ -405,6 +352,11 @@ def confirmed_request(request, format = None):
         serializer = RideshareRequestSerializer(confirmed_req, context={'request': request}, many=True)
         # #print('confirmed_req_data', serializer.data)
         
+        # get trips of each person in the confirmed request 
+
+        confirmed_users = serializer.data
+        print(confirmed_users)
+        # Trip.objects.get(user=)
         # return actual data if exists; if not, return empty list 
         if serializer.data:
             return(Response(serializer.data[0], status=200))
@@ -497,18 +449,15 @@ def confirmed_request(request, format = None):
 
     # delete a confirmed request
     elif request.method == 'DELETE': 
-        #print(request.data)
+        print(request.data)
         # grab relevant data
 
-        user_name = request.data['rideshare_data']['user_trip'][0]['student']
-        partner_name = request.data['rideshare_data']['partner_trip'][0]['student']
-        #print('DELETE', user_name, partner_name)
+        user_name = request.data[0]['student']
+        partner_name = request.data[1]['student']
+        print('DELETE', user_name, partner_name)
 
         rr_request = RideshareRequest.objects.filter(user_user = user_name) | RideshareRequest.objects.filter(partner_user = user_name)
         #print('del rr_request', rr_request)
-
-        #print(RideshareRequestSerializer(rr_request, many=True).data)
-
         # mark both trips inside the request as unconfirmed 
         u_trip = Trip.objects.get(student = user_name)
         #print(u_trip)
@@ -523,7 +472,11 @@ def confirmed_request(request, format = None):
         # delete the specific request 
         rr_request.delete()
 
-        # #print(RideshareRequestSerializer(rr_request).data)
+        # send email
+        requests.delete('http://127.0.0.1:8000/send_email/', data = {'user_name': user_name, 'partner_name': partner_name})
+
+
+
 
         return Response(status=200)
 
@@ -537,7 +490,7 @@ def send_email(request, format=None):
         "to": '',
         "sender": "idlehandsvanderbilt@gmail.com",
         "subject": '',
-        "msg_html": "",
+        "msg_html": '',
         "msg_plain": '',
         "signature": True  # use my account signature
     }
@@ -567,7 +520,7 @@ def send_email(request, format=None):
         params['to'] = receiver_email
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-        return(Response(status=200))
+        # return(Response(status=200))
 
     # the request has been confirmed 
     elif request.method =='PUT': 
@@ -577,13 +530,11 @@ def send_email(request, format=None):
         # partner = request.data['partner_trip']['student']
         # print(user, partner)
 
-        target_user = User.objects.get(username = request.data['user'])
-        target_partner = User.objects.get(username = request.data['partner'])
-        #print(target_user, target_partner)  
+        user_name = request.data[0]
+        user_email = User.objects.get(username=user_name).email
 
-        user_email = target_user.email
-        partner_email = target_partner.email
-        #print(user_email, partner_email)
+        partner_name = request.data[1]
+        partner_email = User.objects.get(username=partner_name).email
 
 
         params['subject'] = 'Project Nimbus: Carpool Confirmed!'
@@ -594,25 +545,30 @@ def send_email(request, format=None):
         params['to'] = partner_email
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
     
-    # the request has been deleted (only sent to the person who didn't delete the request)
+    # the request has been deleted
     elif request.method == 'DELETE': 
         #print('del', request.data)
         
-        partner = request.data['partner_trip'][0]['student']
-        #print(partner)
+        data = request.data
 
-        target_partner = User.objects.get(username = partner)
-        #print(target_partner)   
+        user_name = data['user_name']
+        user_email = User.objects.get(username=user_name).email
 
-        partner_email = target_partner.email
-        #print(partner_email)
+        partner_name = data['partner_name']
+        partner_email = User.objects.get(username=partner_name).email
 
-        params['to'] = partner_email
+        print(user_email, partner_email)
+        params['to'] = user_email
         params['subject'] = 'Project Nimbus: Request Cancelled'
-        params['msg_html'] = 'Your rideshare request has been cancelled. Submit another request here.'
+        params['msg_html'] = 'Your rideshare request has been cancelled. Submit another request at <a href="vandy.link/product/project-nimbus">Project Nimbus</a>.'
 
         email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
-        return(Response(status=200))
+
+        params['to'] = partner_email
+        email = gmail.send_message(**params)  # equivalent to send_message(to="you@youremail.com", sender=...)
+
+
+    return(Response(status=200))
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -621,8 +577,8 @@ def api_root(request, format=None):
         # 'api-token-auth/': reverse('api-token-auth/', request=request, format=format),
         'GoogleOAuth': reverse('GoogleOAuth', request=request, format=format),
         'user_data': reverse('user_data', request=request, format=format),
-        'create_student': reverse('create_student', request=request, format=format),
-        'student_data': reverse('student_data', request=request, format=format),
+        # 'create_student': reverse('create_student', request=request, format=format),
+        # 'student_data': reverse('student_data', request=request, format=format),
         'create_trip': reverse('create_trip', request=request, format=format),
         'my_trips': reverse('my_trips', request=request, format=format),
         'rideshare_request': reverse('rideshare_request', request=request, format=format),

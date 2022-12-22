@@ -39,8 +39,8 @@ function Home(){
                 ? <ConfirmedRequests/> 
                 : <div>
                     <MyTrips/>
-                    <PendingRequests/>
-                    <Trips/>
+                    <PendingRequests/> 
+                    <Trips/> 
                 </div> 
             }
         </div>
